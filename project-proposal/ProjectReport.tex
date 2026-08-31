@@ -1,0 +1,450 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{longtable}
+% Tighten spacing around figures so they don't leave large gaps
+\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{3pt}
+\usepackage{booktabs}
+\usepackage{caption}
+
+% -----------------------------------------------------
+% bvraghav-tiet-ucs503p-article.sty
+% -----------------------------------------------------
+
+% Variable: Lab Instructor
+\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
+  \gdef\Bvr@LabInstructor{#1}}
+% default
+\newcommand{\Bvr@LabInstructor}{Dr. Raghav %
+  B. Venkataramaiyer}
+% public accessor
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Add subtitle
+\usepackage{titling}
+% -- Set title bold
+\pretitle{\begin{center}
+  \includegraphics[width=3.5cm]{thapar_logo.png}\\[0.8em]
+  \bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip 0.5em}%
+}
+\makeatother
+
+% Hints in the section title(s)
+\newcommand{\BvrHint}[1]{%
+  {\normalfont\normalsize\itshape\hfill #1}}
+
+% -----------------------------------------------------
+
+\title{Athena: An AI-Powered Campus Query Bot}
+
+\BvrSetLabInstructor{Ms. Jhonsy Bansal}
+
+\BvrSubtitle{%
+  Project Proposal for UCS503 \\
+  Team: The 3 Stooges \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology%
+}
+
+\author{
+  Armandeep Singh Taggar, CSED \\
+  \small Roll No: \texttt{1024030219}
+  \\[0.5em]
+  Sanchit Narula, CSED \\
+  \small Roll No: \texttt{1024031048}
+  \\[0.5em]
+  Nipun Gupta, CSED \\
+  \small Roll No: \texttt{1024031169}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Higher-order goal%
+  \BvrHint{\ldots secondary framing}}
+This project aims to improve the student experience during and after
+college admission by reducing the time and effort required to find
+accurate campus information. While the underlying problem is broader
+than any single institution, the immediate engineering objective is to
+translate \emph{centralized, verified access to campus knowledge} into
+a measurable, deployable software solution.
+
+\section{Time-to-value %
+\BvrHint{\ldots primary heuristic}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item We will deliver meaningful increments quickly by prototyping the core query-bot workflow (ask a question, retrieve from a verified knowledge base, get a grounded answer) and validating it within a short iteration window.
+    \item We will prioritize fast feedback over perfection by using weekly iterations to reduce release friction, starting with a single-college deployment before generalizing to multiple colleges.
+    \item Success is defined by what can be delivered and measured in the first iteration (a working query bot on institutional data), then improved based on user feedback.
+\end{itemize}
+
+\section{Problem Statement}
+Having experienced this ourselves, we identified a common challenge
+faced by students both before and after joining college: accessing
+accurate, timely, and centralized campus information. Common pain
+points include:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Fragmentation:} official notices, events, venues, society information, and academic details are scattered across multiple websites, portals, PDFs, and social media pages.
+    \item \textbf{Low discoverability:} students cannot easily search or navigate this scattered information, especially newcomers unfamiliar with the campus.
+    \item \textbf{No conversational access:} existing sources require manual searching rather than allowing a student to simply ask a question in natural language.
+    \item \textbf{No verification layer:} there is no reliable way to confirm that information (or the person accessing it) genuinely belongs to a given institution.
+\end{itemize}
+
+\textbf{Why this matters now (contextual relevance):} As colleges publish more information digitally but across disconnected channels, even a modest centralization and search layer can noticeably reduce the time students spend hunting for basic information.
+
+\section{Proposed Solution %
+\BvrHint{\ldots Software Proposition}}
+\subsection{Overview}
+Build a \textbf{web-based}, multi-college platform, ``Athena'', a
+centralized AI-powered campus assistant with the following components:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{AI Campus Query Bot:} a natural-language interface for students to ask questions (e.g., ``What is the hostel admission procedure?'') and receive answers grounded in verified institutional data.
+    \item \textbf{Navigation:} an interactive 2D campus map (with a roadmap toward 3D) to help students locate classrooms, departments, facilities, and event venues.
+    \item \textbf{Academics:} centralized course codes, faculty details, syllabi, timetables, date sheets, and a CGPA calculator.
+    \item \textbf{Societies \& Events:} consolidated information on student societies, upcoming events, and announcements.
+    \item \textbf{Personalized Dashboard \& Reminders:} a student-specific dashboard for managing reminders and important dates.
+    \item \textbf{Admin access \& student verification:} each institution maintains its own verified knowledge base, with a mechanism to confirm a student belongs to the selected institution.
+\end{itemize}
+
+\subsection{Core workflow}
+\begin{enumerate}[leftmargin=0.7cm]
+    \item Student selects/registers with their institution and is verified as belonging to it.
+    \item Student asks a question in natural language through the query bot.
+    \item The system identifies the student's institution and retrieves relevant context from that institution's verified knowledge base (semantic search over document embeddings).
+    \item The retrieved context is passed to the LLM, which generates a clear, contextual response grounded in the retrieved data.
+    \item For location-based queries, the response is additionally resolved into structured data (building, floor, coordinates) and visually surfaced on the campus map.
+\end{enumerate}
+
+\subsection{Operational constraints for an educational, multi-college setting}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Keep the solution usable on low-to-mid range devices via responsive web design.
+    \item Ground every answer in retrieved, verified institutional data rather than relying on a general-purpose LLM alone, since general LLMs have no access to a college's latest notices, room allocations, or internal rules.
+    \item Design each institution's knowledge base and admin access independently, so onboarding a new college does not require changing the underlying platform.
+\end{itemize}
+
+\section{Solution Approach %
+\BvrHint{\ldots Engineering focus}}
+This is an engineering course project, so we focus on system-level
+integration of existing, mature components rather than novel algorithm
+research.
+
+\subsection{Retrieval-grounded answering %
+\BvrHint{\ldots non-research}}
+Answer generation is retrieval-augmented rather than a research
+contribution in itself:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Documents (notices, syllabi, policies, etc.) are converted into vector embeddings using Sentence Transformers and stored via pgvector.
+    \item A student query is embedded and matched against this store using semantic similarity, without claiming state-of-the-art retrieval.
+    \item The retrieved context, not the raw query alone, is passed to the LLM (GPT-4o-mini) so answers stay grounded and easy to update --- when college data changes, only the knowledge base needs updating, not the model.
+\end{itemize}
+
+\subsection{Web architecture %
+\BvrHint{\ldots web-based solution}}
+A typical multi-tier web architecture:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Frontend:} React.js (Vite) with Tailwind CSS for the student/admin interface, dashboards, and 2D map (with Three.js planned for interactive 3D navigation).
+    \item \textbf{Backend API:} Django + DRF for authentication, admin management, and the API layer connecting the frontend to the RAG pipeline.
+    \item \textbf{Database:} PostgreSQL with the pgvector extension to store students, colleges, courses, faculty, events, notices, and embeddings.
+    \item \textbf{Document processing:} PyMuPDF to extract text from PDFs and college documents feeding the knowledge base.
+\end{itemize}
+
+\subsection{CI/CD and fast delivery enabler}
+CI/CD will be used to:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Automatically build and run tests on every change (Git + GitHub).
+    \item Produce repeatable deployment artifacts to staging (Render/Railway for backend, Vercel for frontend).
+    \item Enable safe and frequent releases of incremental features as the knowledge base and feature set grow.
+\end{itemize}
+
+\section{Evaluation Criterion %
+\BvrHint{\ldots measurable and attributable}}
+We define success using measurable metrics tied to the core query-bot
+and navigation workflow.
+
+\subsection{Primary evaluation metric}
+\textbf{Answer groundedness \& relevance:} the proportion of query-bot
+responses that are factually grounded in the retrieved institutional
+context and judged relevant by the asking student.
+\begin{itemize}[leftmargin=0.7cm]
+    \item Target: high grounded-answer rate on a curated RAG evaluation test dataset during the pilot window.
+    \item Attribution: measured via RAG evaluation methodology comparing generated answers against the source documents retrieved.
+\end{itemize}
+
+\subsection{Secondary evaluation metrics}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Query response time:} end-to-end latency from question submission to answer display.
+    \item \textbf{Navigation accuracy:} whether the correct building/floor/room is displayed/highlighted for location queries.
+    \item \textbf{Student verification success rate:} percentage of legitimate students correctly verified against their institution.
+    \item \textbf{Reliability:} availability of staging/production for login and querying during business hours.
+\end{itemize}
+
+\subsection{Pilot validation plan %
+\BvrHint{\ldots high-level}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recruit a pilot group of students (and an admin/staff role for knowledge-base maintenance) from one institution to begin with.
+    \item Compare metrics before/after within the iteration window by logging query outcomes and gathering direct student feedback on answer usefulness.
+\end{itemize}
+
+\section{Scalability %
+\BvrHint{\ldots with foresight}}
+The proposition should scale in both theoretical and practical senses.
+
+\begin{enumerate}[leftmargin=0.7cm]
+    \item \textbf{Scalable (theoretically):} The system should support growth in number of institutions, documents, and concurrent users by:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item decoupling components (frontend/backend/RAG pipeline),
+        \item indexing embeddings via pgvector for efficient semantic search at scale,
+        \item using a stateless API design so institutions can be onboarded without platform changes.
+    \end{itemize}
+
+    \item \textbf{Operationally deployable (practically):} The system should run on common web hosting:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item managed PostgreSQL database with pgvector,
+        \item platform-hosted deployment (Render/Railway, Vercel),
+        \item CI/CD pipeline for staging/production.
+    \end{itemize}
+\end{enumerate}
+
+\section{Engine availability heuristic}
+A mature set of ``engines'' (tooling/services) is available to
+implement this as a web-based project:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Web framework for REST APIs (Django + DRF) and a reactive frontend (React.js/Vite).
+    \item Managed relational database with vector support (PostgreSQL + pgvector).
+    \item Embedding model (Sentence Transformers) and LLM (OpenAI GPT-4o-mini) for the RAG pipeline.
+    \item Document-processing library (PyMuPDF) for ingesting PDFs into the knowledge base.
+    \item Authentication approach (Django Auth) and institutional-email-based student verification.
+    \item Test framework (PyTest) and API testing tool (Postman) for unit/integration tests.
+    \item CI runner and staging deployment targets (Render/Railway, Vercel).
+\end{itemize}
+We will use these mature components to focus on workflow design,
+grounded-answer correctness, and measurement rather than inventing new
+infrastructure.
+
+\subsection{Tech Stack / Tools Required}
+\textbf{v1: tech we are using currently}
+
+\vspace{0.3cm}
+
+\renewcommand{\arraystretch}{1.2}
+
+\begin{longtable}{|p{2.5cm}|p{3.5cm}|p{6cm}|p{1.5cm}|}
+
+\hline
+\textbf{Layer} &
+\textbf{Technology} &
+\textbf{Purpose} &
+\textbf{Status} \\
+\hline
+
+Frontend &
+React.js (Vite) &
+Build the student/admin interface and dashboards &
+v1 \\
+\hline
+
+Styling &
+Tailwind CSS &
+UI structure and styling &
+v1 \\
+\hline
+
+Campus Navigation &
+2D map (SVG, floor-plan images) &
+Locate classrooms, departments, event venues &
+v1 \\
+\hline
+
+Campus Navigation &
+Three.js &
+Interactive 3D campus navigation &
+roadmap \\
+\hline
+
+Backend &
+Django + DRF &
+Core logic, auth, admin management, API layer &
+v1 \\
+\hline
+
+Database &
+PostgreSQL &
+Store students, colleges, courses, faculty, events, notices &
+v1 \\
+\hline
+
+Vector search &
+pgvector &
+Store embeddings, semantic similarity search for RAG &
+v1 \\
+\hline
+
+Embeddings &
+Sentence Transformers &
+Convert documents and queries into vector embeddings &
+v1 \\
+\hline
+
+RAG pipeline &
+Custom Python pipeline &
+Retrieve documents, construct context for the LLM &
+v1 \\
+\hline
+
+LLM &
+OpenAI GPT-4o-mini &
+Generate natural-language answers from retrieved context &
+v1 \\
+\hline
+
+Document processing &
+PyMuPDF &
+Extract text from PDFs and college documents &
+v1 \\
+\hline
+
+Authentication &
+Django Auth &
+Secure student and admin authentication &
+v1 \\
+\hline
+
+Student verification &
+Institutional email check &
+Verify student belongs to selected institution &
+v1 \\
+\hline
+
+Admin management &
+Django Admin &
+Maintain and update institutional information &
+v1 \\
+\hline
+
+Location data &
+Structured JSON &
+Building, floor, room mapping for navigation &
+v1 \\
+\hline
+
+API testing &
+Postman &
+Test backend APIs during development &
+v1 \\
+\hline
+
+Version control &
+Git + GitHub &
+Code management and team collaboration &
+v1 \\
+\hline
+
+Deployment &
+Render/Railway, Vercel &
+Host and serve backend, database, and frontend &
+v1 \\
+\hline
+
+\end{longtable}
+
+\textbf{Roadmap: for future development} --- see Section~\ref{sec:scope} for the future-scope items planned beyond v1.
+
+\section{System Design}
+The figures below summarize the intended system design.
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{case_diagram.png}
+\captionof{figure}{Case Diagram --- students interact with the query bot, navigation, academics, and reminder features, while admins manage the institutional knowledge base.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{architecture.png}
+\captionof{figure}{System Architecture --- a student request travels from the React frontend down to the LLM, with the RAG pipeline in the middle grounding answers in verified data.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{er_diagram.png}
+\captionof{figure}{ER Diagram --- core entities: Institution, Student, Course, Faculty, Event, Society, Reminder, and Knowledge\_Document.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{sequence_diagram.png}
+\captionof{figure}{Sequence Diagram --- message exchange for a single query across student, frontend, backend, RAG pipeline/vector store, and LLM.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{class_diagram.png}
+\captionof{figure}{Class Diagram --- core classes and their relationships, mirroring the ER diagram with added behavior relevant to the query bot and reminders.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{deployment_diagram.png}
+\captionof{figure}{Deployment Diagram --- browser client, Vercel frontend, Render/Railway backend and database, and the external OpenAI API.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{workflow.png}
+\captionof{figure}{Athena Work Flow.}
+\end{center}
+
+\section{Project scope and deliverables %
+\BvrHint{\ldots iteration-friendly}}
+\label{sec:scope}
+\subsection{Initial deliverable %
+\BvrHint{\ldots first iteration}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Student/admin frontend (React + Tailwind) and Django + DRF backend with authentication
+    \item Institutional knowledge base ingestion pipeline (PyMuPDF $\rightarrow$ embeddings $\rightarrow$ pgvector)
+    \item AI Campus Query Bot answering questions grounded in retrieved context (RAG with GPT-4o-mini)
+    \item 2D campus map for locating classrooms, departments, and event venues
+    \item Student verification via institutional email check
+    \item CI: build + backend unit tests; CD to staging (Render/Railway, Vercel)
+\end{itemize}
+
+\subsection{Subsequent deliverables}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Interactive 3D campus navigation (Three.js + Blender models) with turn-by-turn direction
+    \item Personalized dashboard and reminders for academic/campus dates
+    \item Admin dashboard for knowledge-base maintenance across multiple colleges
+    \item Voice assistant, mobile app, university ERP and attendance integration, personalized academic assistant
+\end{itemize}
+
+\section{Risks and mitigations}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Ungrounded/incorrect answers:} rely on RAG evaluation with a test dataset before release; never let the LLM answer without retrieved context for institution-specific questions.
+    \item \textbf{Student verification bypass:} keep verification (institutional email check) mandatory before institution-specific data is served.
+    \item \textbf{Knowledge-base staleness:} give admins a straightforward Django Admin workflow to update documents so the vector store reflects current information.
+    \item \textbf{Scaling to multiple colleges:} keep institution data and knowledge bases logically separated from the start so onboarding a new college does not require re-architecture.
+\end{itemize}
+
+\section{Summary}
+This project proposes Athena, a deployable, multi-college AI campus
+assistant that centralizes fragmented campus information behind a
+single natural-language interface. It meets the course criteria by
+emphasizing time-to-value through rapid iterations starting with a
+single-college pilot, implementing CI/CD to support frequent safe
+releases, and using measurable evaluation criteria centered on
+grounded, relevant answers. Its contribution lies in system-level
+integration --- verified institutional knowledge, student
+verification, semantic search, retrieval-augmented generation, and an
+interactive campus map --- rather than research-driven novelty in any
+single component.
+
+\end{document}
