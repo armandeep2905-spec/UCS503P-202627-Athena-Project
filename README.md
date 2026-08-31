@@ -22,16 +22,6 @@ Instead of relying only on an LLM's general knowledge, Athena retrieves relevant
 
 Athena uses **Retrieval-Augmented Generation (RAG)** to connect an LLM with institution-specific documents and information.
 
-This allows students to ask questions such as:
-
-> "What are the hostel rules?"
-
-> "What is the procedure for exam registration?"
-
-> "Where is the AI Lab?"
-
-> "Which department offers this course?"
-
 ### 🏫 Multi-College Architecture
 
 Athena is designed to support **multiple colleges and universities**.
@@ -56,16 +46,6 @@ Students can locate:
 - Classrooms
 - Specific rooms
 
-For example:
-
-> **Student:** "Where is Room 204 in the Computer Science Block?"
-
-> **Athena:** "Room 204 is on the second floor of the Computer Science Block."
-
-The corresponding location can then be highlighted or identified within the **3D campus environment**.
-
----
-
 ## 🎯 Problem
 
 Students often need information from many different sources:
@@ -77,7 +57,6 @@ Students often need information from many different sources:
 - Hostel guidelines
 - Examination instructions
 - Placement information
-- Campus facilities
 - Maps and building directories
 
 Finding the correct information can be time-consuming, especially when information is scattered across different documents and platforms.
@@ -184,63 +163,84 @@ Athena does not simply send every question directly to an LLM.
                     ┌───────────────────┐
                     │ Student Response  │
                     └───────────────────┘
-🛠️ Technology Stack
-🎨 Frontend
-HTML
-CSS
-JavaScript
-⚡ Backend
-Python
-FastAPI
+## 🛠️ Technology Stack
+
+### 🎨 Frontend
+
+- HTML
+- CSS
+- JavaScript
+
+### ⚡ Backend
+
+- Python
+- FastAPI
 
 FastAPI provides the API layer connecting the frontend with authentication, database operations and AI services.
 
-🧠 Artificial Intelligence
-Large Language Model (LLM)
-Natural Language Processing (NLP)
-Retrieval-Augmented Generation (RAG)
-🔎 Semantic Retrieval
-Embedding Model
-Sentence Transformers / Embedding API
-Vector Database / Vector Store
+### 🧠 Artificial Intelligence
+
+- Large Language Model (LLM)
+- Natural Language Processing (NLP)
+- Retrieval-Augmented Generation (RAG)
+
+### 🔎 Semantic Retrieval
+
+- Embedding Model
+- Sentence Transformers / Embedding API
+- Vector Database / Vector Store
 
 Embeddings allow Athena to find information based on meaning, rather than relying only on exact keywords.
 
-🗄️ Database
-PostgreSQL
+### 🗄️ Database
+
+- PostgreSQL
 
 Used for structured information such as:
 
-Institutions
-Students
-Administrators
-Departments
-Courses
-Buildings
-Floors
-Rooms
-Events
-Knowledge documents
-🔐 Authentication
-JWT-based authentication
-Institution/student verification
-🗺️ 3D Visualization
-Three.js
-Blender
+- Institutions
+- Students
+- Administrators
+- Departments
+- Courses
+- Buildings
+- Floors
+- Rooms
+- Events
+- Knowledge documents
+
+### 🔐 Authentication
+
+- JWT-based authentication
+- Institution/student verification
+
+### 🗺️ 3D Visualization
+
+- Three.js
+- Blender
 
 Three.js can be used for rendering the interactive campus while Blender can be used to create or edit 3D campus models.
 
-🧪 Testing
-Postman
-PyTest
-🔧 Development
-Visual Studio Code
-Git
-GitHub
-📦 Deployment
-Docker
-Cloud deployment environment
-📂 Project Structure
+### 🧪 Testing
+
+- Postman
+- PyTest
+
+### 🔧 Development
+
+- Visual Studio Code
+- Git
+- GitHub
+
+### 📦 Deployment
+
+- Docker
+- Cloud deployment environment
+
+
+## 📂 Project Structure
+
+```text
 Athena/
 │
 ├── assets/
@@ -272,53 +272,62 @@ Athena/
 │
 ├── README.md
 └── .gitignore
-👥 Target Users
-🎓 Students
+```
+
+
+## 👥 Target Users
+
+### 🎓 Students
 
 For academic, administrative and campus-related queries.
 
-🆕 New Students
+### 🆕 New Students
 
 For understanding campus facilities and navigating unfamiliar buildings.
 
-👨‍💼 College Administrators
+### 👨‍💼 College Administrators
 
 For maintaining institution-specific information and knowledge sources.
 
-👨‍🏫 Faculty & Staff
+### 👨‍🏫 Faculty & Staff
 
 For locating departments, rooms, laboratories and campus facilities.
 
-🧑‍🤝‍🧑 Visitors
+### 🧑‍🤝‍🧑 Visitors
 
 For understanding and navigating the campus environment where permitted.
 
-🚀 Future Scope
-📱 Mobile application
-🗣️ Voice-based interaction
-🌐 Multilingual campus assistance
-📍 Real-time indoor positioning
-🧭 Turn-by-turn indoor navigation
-📅 Personalized academic reminders
-🔔 Important campus notifications
-🪄 AR-based campus navigation
-📊 Analytics for frequently asked campus queries
-🔄 Automated institutional knowledge updates
-💡 Our Contribution
 
-We are not claiming novelty in the LLM itself.
+## 🚀 Future Scope
 
-Our contribution is the system-level integration of:
+- 📱 Mobile application
+- 🗣️ Voice-based interaction
+- 🌐 Multilingual campus assistance
+- 📍 Real-time indoor positioning
+- 🧭 Turn-by-turn indoor navigation
+- 📅 Personalized academic reminders
+- 🔔 Important campus notifications
+- 🪄 AR-based campus navigation
+- 📊 Analytics for frequently asked campus queries
+- 🔄 Automated institutional knowledge updates
 
-Multi-college architecture + institution-controlled verified knowledge + student affiliation verification + RAG-based institutional question answering + structured campus data + interactive 3D building/floor/room navigation.
 
-The goal is to make AI context-specific, institution-aware and practically useful, rather than building another generic chatbot.
+## 💡 Our Contribution
 
-👨‍💻 Project Information
+We are **not claiming novelty in the LLM itself**.
 
-Project Name: Athena
-Project Type: Software Engineering Project
-Domain: Artificial Intelligence + NLP + Information Retrieval + Campus Navigation
-Backend: Python / FastAPI
-Database: PostgreSQL
-Version Control: Git / GitHub
+Our contribution is the **system-level integration** of:
+
+**Multi-college architecture + institution-controlled verified knowledge + student affiliation verification + RAG-based institutional question answering + structured campus data + interactive 3D building/floor/room navigation.**
+
+The goal is to make AI **context-specific, institution-aware and practically useful**, rather than building another generic chatbot.
+
+
+## 👨‍💻 Project Information
+
+- **Project Name:** Athena
+- **Project Type:** Software Engineering Project
+- **Domain:** Artificial Intelligence + NLP + Information Retrieval + Campus Navigation
+- **Backend:** Python / FastAPI
+- **Database:** PostgreSQL
+- **Version Control:** Git / GitHub
