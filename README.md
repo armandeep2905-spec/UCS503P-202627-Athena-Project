@@ -163,6 +163,7 @@ Athena does not simply send every question directly to an LLM.
                     ┌───────────────────┐
                     │ Student Response  │
                     └───────────────────┘
+```
 ## 🛠️ Technology Stack
 
 ### 🎨 Frontend
@@ -272,7 +273,6 @@ Athena/
 │
 ├── README.md
 └── .gitignore
-```
 
 
 ## 👥 Target Users
