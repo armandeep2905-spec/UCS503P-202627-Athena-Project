@@ -1,9 +1,1 @@
-# macOS
 .DS_Store
-
-# Environment variables
-.env
-
-# IDE
-.vscode/
-.idea/
