@@ -184,3 +184,141 @@ Athena does not simply send every question directly to an LLM.
                     ┌───────────────────┐
                     │ Student Response  │
                     └───────────────────┘
+🛠️ Technology Stack
+🎨 Frontend
+HTML
+CSS
+JavaScript
+⚡ Backend
+Python
+FastAPI
+
+FastAPI provides the API layer connecting the frontend with authentication, database operations and AI services.
+
+🧠 Artificial Intelligence
+Large Language Model (LLM)
+Natural Language Processing (NLP)
+Retrieval-Augmented Generation (RAG)
+🔎 Semantic Retrieval
+Embedding Model
+Sentence Transformers / Embedding API
+Vector Database / Vector Store
+
+Embeddings allow Athena to find information based on meaning, rather than relying only on exact keywords.
+
+🗄️ Database
+PostgreSQL
+
+Used for structured information such as:
+
+Institutions
+Students
+Administrators
+Departments
+Courses
+Buildings
+Floors
+Rooms
+Events
+Knowledge documents
+🔐 Authentication
+JWT-based authentication
+Institution/student verification
+🗺️ 3D Visualization
+Three.js
+Blender
+
+Three.js can be used for rendering the interactive campus while Blender can be used to create or edit 3D campus models.
+
+🧪 Testing
+Postman
+PyTest
+🔧 Development
+Visual Studio Code
+Git
+GitHub
+📦 Deployment
+Docker
+Cloud deployment environment
+📂 Project Structure
+Athena/
+│
+├── assets/
+│   └── 3d-models/
+│
+├── code/
+│   ├── backend/
+│   ├── frontend/
+│   ├── ai/
+│   ├── rag/
+│   ├── database/
+│   └── navigation/
+│
+├── docs/
+│   ├── requirements/
+│   ├── design/
+│   └── testing/
+│
+├── journals/
+│   ├── member-1/
+│   ├── member-2/
+│   └── member-3/
+│
+├── project-proposal/
+│
+├── project-report-prototype-stage/
+│
+├── project-report-final/
+│
+├── README.md
+└── .gitignore
+👥 Target Users
+🎓 Students
+
+For academic, administrative and campus-related queries.
+
+🆕 New Students
+
+For understanding campus facilities and navigating unfamiliar buildings.
+
+👨‍💼 College Administrators
+
+For maintaining institution-specific information and knowledge sources.
+
+👨‍🏫 Faculty & Staff
+
+For locating departments, rooms, laboratories and campus facilities.
+
+🧑‍🤝‍🧑 Visitors
+
+For understanding and navigating the campus environment where permitted.
+
+🚀 Future Scope
+📱 Mobile application
+🗣️ Voice-based interaction
+🌐 Multilingual campus assistance
+📍 Real-time indoor positioning
+🧭 Turn-by-turn indoor navigation
+📅 Personalized academic reminders
+🔔 Important campus notifications
+🪄 AR-based campus navigation
+📊 Analytics for frequently asked campus queries
+🔄 Automated institutional knowledge updates
+💡 Our Contribution
+
+We are not claiming novelty in the LLM itself.
+
+Our contribution is the system-level integration of:
+
+Multi-college architecture + institution-controlled verified knowledge + student affiliation verification + RAG-based institutional question answering + structured campus data + interactive 3D building/floor/room navigation.
+
+The goal is to make AI context-specific, institution-aware and practically useful, rather than building another generic chatbot.
+
+👨‍💻 Project Information
+
+Project Name: Athena
+Project Type: Software Engineering Project
+Domain: Artificial Intelligence + NLP + Information Retrieval + Campus Navigation
+Backend: Python / FastAPI
+Database: PostgreSQL
+Version Control: Git / GitHub
