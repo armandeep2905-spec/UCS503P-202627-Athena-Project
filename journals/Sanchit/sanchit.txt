@@ -1,1 +1,13 @@
 #WEEK 1
+# Week 1
+-> Submitted the project options
+-> Researched about the tools required for the AI campus
+   query bot
+-> Stared working on the project report
+
+#WEEK 2
+-> Reviewed the existing SQLite database structure.
+-> Migrated the database structure to PostgreSQL.
+-> Created the college_db PostgreSQL database.
+-> Created the required tables.
+-> Tested the database connection locally.
