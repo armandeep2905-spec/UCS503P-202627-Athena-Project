@@ -1,0 +1,13 @@
+# Week 1
+-> Submitted the project options
+-> Researched about the tools required for the AI campus
+   query bot
+-> Stared working on the project report
+
+
+# Week 2
+-> Today, I forked the project repository 
+-> Added the LaTeX project report
+-> Added .gitignore to remove unnecessary files
+-> Started my journal 
+-> made the project database in sql lite(postgres later)
