@@ -1,0 +1,61 @@
+[
+  {
+    "keywords": ["library", "book", "reading", "study"],
+    "answer": "The Central Library is located near the eastern side of the campus. It has three floors: Ground Floor (Issue Counter & Periodicals), First Floor (Reading Hall), and Second Floor (Digital Section & Journals). Library timings are 8:00 AM to 8:00 PM on weekdays and 9:00 AM to 5:00 PM on weekends.",
+    "sources": [
+      { "title": "Campus Facilities Guide", "type": "PDF" },
+      { "title": "Library Rules & Timings", "type": "Notice" }
+    ],
+    "locationId": 3
+  },
+  {
+    "keywords": ["ai lab", "artificial intelligence", "machine learning", "lab"],
+    "answer": "The AI Lab is located in Room 204, Second Floor of the Computer Science Block. It is equipped with GPU workstations and is available for research and coursework related to AI/ML. Lab hours: 9:00 AM to 5:00 PM (Mon–Fri). Book a slot through the department office.",
+    "sources": [
+      { "title": "CS Department Lab Directory", "type": "PDF" },
+      { "title": "Lab Booking Policy", "type": "Notice" }
+    ],
+    "locationId": 1
+  },
+  {
+    "keywords": ["exam", "date sheet", "mid semester", "examination"],
+    "answer": "Mid-semester examinations for the current semester begin on September 25, 2026. The detailed date sheet is available on the examination branch notice board and has been uploaded to the college portal. Make sure to carry your admit card and college ID to every exam.",
+    "sources": [
+      { "title": "Examination Schedule — Sept 2026", "type": "PDF" },
+      { "title": "Exam Rules & Guidelines", "type": "Circular" }
+    ],
+    "locationId": null
+  },
+  {
+    "keywords": ["admission", "fee", "tuition", "scholarship"],
+    "answer": "For admission-related queries, please visit the Administrative Block (Ground Floor, Registrar's Office). Current semester fee is ₹45,000 for general category. Merit-based scholarships of up to 50% are available — apply through the Student Affairs office before the deadline.",
+    "sources": [
+      { "title": "Admission Prospectus 2026–27", "type": "PDF" },
+      { "title": "Scholarship Policy Document", "type": "PDF" }
+    ],
+    "locationId": 4
+  },
+  {
+    "keywords": ["hostel", "mess", "accommodation", "room"],
+    "answer": "The Boys Hostel is located on the south-east corner of the campus. It has 4 floors with double-sharing rooms. The mess serves breakfast (7:30–9:00 AM), lunch (12:30–2:00 PM), and dinner (7:30–9:00 PM). Hostel allotment is done through the Dean of Student Welfare office.",
+    "sources": [
+      { "title": "Hostel Handbook", "type": "PDF" },
+      { "title": "Mess Menu & Timings", "type": "Notice" }
+    ],
+    "locationId": 6
+  },
+  {
+    "keywords": ["sports", "gym", "cricket", "basketball", "swimming"],
+    "answer": "The Sports Complex is in the south-west area of the campus. It includes a basketball court, cricket ground, gymnasium, and swimming pool. The gym is open from 6:00 AM to 9:00 PM. For team sports, contact the Sports Club (Blaze) coordinator.",
+    "sources": [
+      { "title": "Sports Facilities Overview", "type": "PDF" }
+    ],
+    "locationId": 7
+  },
+  {
+    "keywords": ["default"],
+    "answer": "I can help you with information about campus facilities, academics, events, and navigation. Try asking about specific buildings, courses, faculty, exam schedules, or campus facilities. You can also ask me where something is located and I'll point you to it on the campus map!",
+    "sources": [],
+    "locationId": null
+  }
+]

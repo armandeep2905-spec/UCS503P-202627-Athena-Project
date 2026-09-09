@@ -1,0 +1,55 @@
+{
+  "count": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Dr. Priya Sharma",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS503 — Software Engineering", "UCS510 — Cloud Computing"],
+      "contact": "priya.sharma@democollege.edu",
+      "office": "Block A, Room 301"
+    },
+    {
+      "id": 2,
+      "name": "Dr. Rajesh Kumar",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS501 — Computer Networks"],
+      "contact": "rajesh.kumar@democollege.edu",
+      "office": "Block A, Room 205"
+    },
+    {
+      "id": 3,
+      "name": "Dr. Anita Gupta",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS502 — Compiler Design", "UCS507 — Theory of Computation"],
+      "contact": "anita.gupta@democollege.edu",
+      "office": "Block A, Room 302"
+    },
+    {
+      "id": 4,
+      "name": "Dr. Vikram Singh",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS504 — Artificial Intelligence", "UCS512 — Machine Learning"],
+      "contact": "vikram.singh@democollege.edu",
+      "office": "Block B, Room 104"
+    },
+    {
+      "id": 5,
+      "name": "Dr. Meena Rani",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS505 — Database Management Systems"],
+      "contact": "meena.rani@democollege.edu",
+      "office": "Block A, Room 210"
+    },
+    {
+      "id": 6,
+      "name": "Dr. Sandeep Verma",
+      "department": "Computer Science",
+      "coursesTaught": ["UCS506 — Operating Systems", "UCS509 — Distributed Systems"],
+      "contact": "sandeep.verma@democollege.edu",
+      "office": "Block B, Room 201"
+    }
+  ]
+}

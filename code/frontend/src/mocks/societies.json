@@ -1,0 +1,31 @@
+{
+  "count": 4,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Tech Society — ByteForce",
+      "description": "The premier technical society organizing hackathons, coding contests, workshops, and tech talks. Open to all engineering students.",
+      "events": [1, 3, 5]
+    },
+    {
+      "id": 2,
+      "name": "Literary Society — Quill & Ink",
+      "description": "For lovers of language and literature. Conducts debates, creative writing sessions, poetry recitals, and publishes the college magazine.",
+      "events": [2]
+    },
+    {
+      "id": 3,
+      "name": "Cultural Society — Rang Tarang",
+      "description": "Celebrates art and culture through dance, music, drama, and fashion. Organizes the annual cultural fest and inter-college competitions.",
+      "events": [4]
+    },
+    {
+      "id": 4,
+      "name": "Sports Club — Blaze",
+      "description": "Manages all sports activities including inter-college tournaments, annual sports day, and fitness workshops. Facilities include cricket, basketball, and athletics.",
+      "events": []
+    }
+  ]
+}
