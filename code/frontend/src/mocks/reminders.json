@@ -1,0 +1,35 @@
+{
+  "count": 4,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "studentId": 1,
+      "title": "Software Engineering Assignment Due",
+      "date": "2026-09-12",
+      "note": "Submit UCS503 project report on GitHub. Include all team member journals."
+    },
+    {
+      "id": 2,
+      "studentId": 1,
+      "title": "Mid-Semester Examinations",
+      "date": "2026-09-25",
+      "note": "Mid-semester exams begin. Check date sheet for subject-wise schedule."
+    },
+    {
+      "id": 3,
+      "studentId": 1,
+      "title": "Hackathon Registration Deadline",
+      "date": "2026-09-18",
+      "note": "Register your team for Build for Good hackathon before the deadline."
+    },
+    {
+      "id": 4,
+      "studentId": 1,
+      "title": "Library Book Return",
+      "date": "2026-09-14",
+      "note": "Return 'Design Patterns' by Gamma et al. to the central library."
+    }
+  ]
+}

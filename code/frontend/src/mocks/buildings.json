@@ -1,0 +1,77 @@
+{
+  "count": 7,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Computer Science Block",
+      "description": "Houses the Department of Computer Science & Engineering, including classrooms, faculty offices, and research labs.",
+      "departments": ["Computer Science & Engineering"],
+      "facilities": ["AI Lab", "Networks Lab", "Software Lab", "Faculty Offices"],
+      "floors": ["Ground Floor", "First Floor", "Second Floor"],
+      "coordinates": { "x": 35, "y": 30 },
+      "photo": null
+    },
+    {
+      "id": 2,
+      "name": "Main Auditorium",
+      "description": "The central auditorium used for college events, seminars, convocations, and guest lectures. Seating capacity: 800.",
+      "departments": [],
+      "facilities": ["Stage", "Green Room", "Sound System", "Projector"],
+      "floors": ["Ground Floor", "Balcony"],
+      "coordinates": { "x": 55, "y": 25 },
+      "photo": null
+    },
+    {
+      "id": 3,
+      "name": "Central Library",
+      "description": "The main library with an extensive collection of textbooks, journals, and digital resources. Quiet study zones available.",
+      "departments": [],
+      "facilities": ["Reading Hall", "Digital Section", "Periodicals", "Issue Counter"],
+      "floors": ["Ground Floor", "First Floor", "Second Floor"],
+      "coordinates": { "x": 70, "y": 45 },
+      "photo": null
+    },
+    {
+      "id": 4,
+      "name": "Administrative Block",
+      "description": "Central administration building housing the registrar's office, examination branch, and student affairs.",
+      "departments": ["Administration", "Examination Branch"],
+      "facilities": ["Registrar Office", "Dean's Office", "Student Affairs", "Accounts"],
+      "floors": ["Ground Floor", "First Floor"],
+      "coordinates": { "x": 45, "y": 55 },
+      "photo": null
+    },
+    {
+      "id": 5,
+      "name": "Mechanical Block",
+      "description": "Department of Mechanical Engineering with workshops, design labs, and faculty offices.",
+      "departments": ["Mechanical Engineering"],
+      "facilities": ["Workshop", "CAD Lab", "Thermal Lab", "Faculty Offices"],
+      "floors": ["Ground Floor", "First Floor", "Second Floor"],
+      "coordinates": { "x": 20, "y": 55 },
+      "photo": null
+    },
+    {
+      "id": 6,
+      "name": "Boys Hostel",
+      "description": "Residential hostel for male students. Includes a mess hall, common room, and recreation area.",
+      "departments": [],
+      "facilities": ["Mess Hall", "Common Room", "Laundry", "Wi-Fi Zone"],
+      "floors": ["Ground Floor", "First Floor", "Second Floor", "Third Floor"],
+      "coordinates": { "x": 80, "y": 70 },
+      "photo": null
+    },
+    {
+      "id": 7,
+      "name": "Sports Complex",
+      "description": "Multi-sport facility with indoor and outdoor courts, a gymnasium, and a swimming pool.",
+      "departments": [],
+      "facilities": ["Basketball Court", "Cricket Ground", "Gymnasium", "Swimming Pool"],
+      "floors": ["Ground Floor"],
+      "coordinates": { "x": 25, "y": 75 },
+      "photo": null
+    }
+  ]
+}

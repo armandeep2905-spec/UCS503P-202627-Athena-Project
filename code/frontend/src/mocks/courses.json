@@ -1,0 +1,79 @@
+{
+  "count": 8,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "code": "UCS503",
+      "name": "Software Engineering",
+      "faculty": "Dr. Priya Sharma",
+      "syllabusLink": "/docs/syllabus/ucs503.pdf",
+      "credits": 4,
+      "department": "Computer Science"
+    },
+    {
+      "id": 2,
+      "code": "UCS501",
+      "name": "Computer Networks",
+      "faculty": "Dr. Rajesh Kumar",
+      "syllabusLink": "/docs/syllabus/ucs501.pdf",
+      "credits": 4,
+      "department": "Computer Science"
+    },
+    {
+      "id": 3,
+      "code": "UCS502",
+      "name": "Compiler Design",
+      "faculty": "Dr. Anita Gupta",
+      "syllabusLink": "/docs/syllabus/ucs502.pdf",
+      "credits": 4,
+      "department": "Computer Science"
+    },
+    {
+      "id": 4,
+      "code": "UCS504",
+      "name": "Artificial Intelligence",
+      "faculty": "Dr. Vikram Singh",
+      "syllabusLink": "/docs/syllabus/ucs504.pdf",
+      "credits": 3,
+      "department": "Computer Science"
+    },
+    {
+      "id": 5,
+      "code": "UCS505",
+      "name": "Database Management Systems",
+      "faculty": "Dr. Meena Rani",
+      "syllabusLink": "/docs/syllabus/ucs505.pdf",
+      "credits": 4,
+      "department": "Computer Science"
+    },
+    {
+      "id": 6,
+      "code": "UTA008",
+      "name": "Environmental Studies",
+      "faculty": "Dr. Harpreet Kaur",
+      "syllabusLink": "/docs/syllabus/uta008.pdf",
+      "credits": 2,
+      "department": "General"
+    },
+    {
+      "id": 7,
+      "code": "UCS506",
+      "name": "Operating Systems",
+      "faculty": "Dr. Sandeep Verma",
+      "syllabusLink": "/docs/syllabus/ucs506.pdf",
+      "credits": 4,
+      "department": "Computer Science"
+    },
+    {
+      "id": 8,
+      "code": "UMA036",
+      "name": "Discrete Mathematics",
+      "faculty": "Dr. Kavita Devi",
+      "syllabusLink": "/docs/syllabus/uma036.pdf",
+      "credits": 3,
+      "department": "Mathematics"
+    }
+  ]
+}

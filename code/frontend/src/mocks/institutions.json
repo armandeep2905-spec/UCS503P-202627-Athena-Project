@@ -1,0 +1,28 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Demo College",
+      "domain": "democollege.edu",
+      "logo": null,
+      "address": "Punjab, India"
+    },
+    {
+      "id": 2,
+      "name": "Punjab Engineering University",
+      "domain": "pec.edu.in",
+      "logo": null,
+      "address": "Chandigarh, India"
+    },
+    {
+      "id": 3,
+      "name": "National Institute of Technology",
+      "domain": "nit.edu.in",
+      "logo": null,
+      "address": "Jalandhar, Punjab, India"
+    }
+  ]
+}

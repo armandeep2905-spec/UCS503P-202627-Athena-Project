@@ -1,0 +1,47 @@
+{
+  "count": 5,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "title": "Tech Fest 2026",
+      "date": "2026-09-10",
+      "venue": "Main Auditorium",
+      "societyId": 1,
+      "description": "Annual technical festival featuring hackathons, coding competitions, robotics challenges, and guest lectures from industry leaders."
+    },
+    {
+      "id": 2,
+      "title": "Literary Week",
+      "date": "2026-09-15",
+      "venue": "Seminar Hall, Block C",
+      "societyId": 2,
+      "description": "A week-long celebration of literature with poetry slams, creative writing workshops, and an inter-college debate competition."
+    },
+    {
+      "id": 3,
+      "title": "Hackathon: Build for Good",
+      "date": "2026-09-20",
+      "venue": "Computer Lab 1 & 2, Block A",
+      "societyId": 1,
+      "description": "24-hour hackathon focused on building solutions for social impact. Open to teams of 2-4 members."
+    },
+    {
+      "id": 4,
+      "title": "Cultural Night — Rang Tarang",
+      "date": "2026-10-05",
+      "venue": "Open Air Theatre",
+      "societyId": 3,
+      "description": "Annual cultural extravaganza with dance performances, music, theatre acts, and a fashion show."
+    },
+    {
+      "id": 5,
+      "title": "Workshop: Introduction to AI/ML",
+      "date": "2026-10-12",
+      "venue": "Block B, Room 104",
+      "societyId": 1,
+      "description": "Hands-on workshop covering fundamentals of machine learning, neural networks, and practical applications using Python."
+    }
+  ]
+}
