@@ -12,16 +12,22 @@ class Institution(models.Model):
 
 
 class Student(models.Model):
-    """
-    One-to-one with Django's built-in auth User, which handles password
-    hashing, login, and DRF Token auth out of the box. Institution-specific
-    fields (matching the existing `students` table) live here.
-    """
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="students")
+    student_id = models.BigIntegerField(primary_key=True)
+    institution = models.ForeignKey(
+        Institution,
+        on_delete=models.DO_NOTHING,
+        related_name="students",
+        db_column="institution_id"
+    )
     name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
+    branch = models.CharField(max_length=255, blank=True, null=True)
     roll_number = models.CharField(max_length=50, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "students"
+        managed = False
 
     def __str__(self):
         return self.name

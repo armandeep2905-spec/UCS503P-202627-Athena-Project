@@ -4,14 +4,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Connect to PostgreSQL
-conn = psycopg2.connect(
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    database=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD")
-)
+# Connect to PostgreSQL (DATABASE_URL takes priority)
+database_url = os.getenv("DATABASE_URL")
+
+if database_url:
+    conn = psycopg2.connect(database_url)
+else:
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        sslmode="require"
+    )
 
 cursor = conn.cursor()
 
@@ -101,7 +107,7 @@ else:
         "Test Student",
         "student@democollege.edu",
         "1024030001",
-        1
+        True
     ))
 
     student_id = cursor.fetchone()[0]
