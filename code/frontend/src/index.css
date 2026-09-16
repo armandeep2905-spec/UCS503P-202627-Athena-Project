@@ -13,31 +13,31 @@
 
 :root {
   /* --- Brand --- */
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-light: #eef2ff;
-  --color-accent: #f59e0b;
-  --color-accent-hover: #d97706;
+  --color-primary: #1e3a8a; /* Deep Blue */
+  --color-primary-hover: #1e40af;
+  --color-primary-light: #eff6ff;
+  --color-accent: #d4af37; /* Gold */
+  --color-accent-hover: #b8860b;
 
   /* --- Surfaces --- */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f8fafc;
+  --color-surface: #ffffff; /* White */
+  --color-surface-alt: #f3f4f6; /* Light Gray */
   --color-surface-raised: #ffffff;
 
   /* --- Text --- */
-  --color-on-surface: #1e293b;
+  --color-on-surface: #1f2937; /* Dark Gray */
   --color-on-primary: #ffffff;
-  --color-muted: #64748b;
+  --color-muted: #6b7280; /* Gray */
 
   /* --- Borders --- */
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
+  --color-border: #e5e7eb;
+  --color-border-light: #f9fafb;
 
   /* --- Feedback --- */
   --color-danger: #ef4444;
   --color-danger-light: #fef2f2;
-  --color-success: #22c55e;
-  --color-success-light: #f0fdf4;
+  --color-success: #10b981;
+  --color-success-light: #ecfdf5;
   --color-warning: #f59e0b;
   --color-warning-light: #fffbeb;
   --color-info: #3b82f6;
@@ -60,36 +60,36 @@
 }
 
 [data-theme="dark"] {
-  --color-primary: #818cf8;
-  --color-primary-hover: #6366f1;
-  --color-primary-light: #1e1b4b;
-  --color-accent: #fbbf24;
-  --color-accent-hover: #f59e0b;
+  --color-primary: #3b82f6; /* Lighter Blue for visibility */
+  --color-primary-hover: #60a5fa;
+  --color-primary-light: #172554;
+  --color-accent: #d4af37; /* Gold */
+  --color-accent-hover: #fcd34d;
 
-  --color-surface: #0f172a;
-  --color-surface-alt: #1e293b;
-  --color-surface-raised: #1e293b;
+  --color-surface: #111827; /* Dark Gray */
+  --color-surface-alt: #1f2937;
+  --color-surface-raised: #1f2937;
 
-  --color-on-surface: #f1f5f9;
-  --color-on-primary: #1e1b4b;
-  --color-muted: #94a3b8;
+  --color-on-surface: #f9fafb; /* White-ish */
+  --color-on-primary: #ffffff;
+  --color-muted: #9ca3af; /* Gray */
 
-  --color-border: #334155;
-  --color-border-light: #1e293b;
+  --color-border: #374151;
+  --color-border-light: #1f2937;
 
   --color-danger: #f87171;
   --color-danger-light: #450a0a;
-  --color-success: #4ade80;
-  --color-success-light: #052e16;
+  --color-success: #34d399;
+  --color-success-light: #064e3b;
   --color-warning: #fbbf24;
   --color-warning-light: #451a03;
   --color-info: #60a5fa;
   --color-info-light: #172554;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.35), 0 4px 6px -4px rgb(0 0 0 / 0.2);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.25);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
 
 /* ============================================================
