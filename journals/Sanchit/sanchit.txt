@@ -1,5 +1,4 @@
 #WEEK 1
-# Week 1
 -> Submitted the project options
 -> Researched about the tools required for the AI campus
    query bot
