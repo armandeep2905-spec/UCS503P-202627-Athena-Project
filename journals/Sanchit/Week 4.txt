@@ -1,0 +1,16 @@
+Tasks Achieved
+->Continued development and testing of the backend and database integration.
+->Worked on adding and managing student data in the PostgreSQL database.
+->Added the required student-related fields such as name, roll number, branch, email, and verification status.
+->Tested the database using a larger set of student records.
+->Worked with the Django Admin interface to view and manage database records.
+->Investigated the connection between the backend and the Neon PostgreSQL database.
+->Worked on configuring the project so that the backend could access the required database environment.
+->Tested the database and backend integration to prepare it for further development.
+
+Problems Faced
+->Handling a large amount of student data efficiently.
+->Resolving issues related to database table mapping and missing tables.
+->Understanding the difference between the local PostgreSQL database and the Neon database.
+->Configuring the backend to connect to the correct PostgreSQL environment.
+->Resolving database connection and synchronization issues during testing.

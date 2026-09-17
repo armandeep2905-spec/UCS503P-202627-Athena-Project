@@ -1,0 +1,15 @@
+Tasks Achieved
+->Reviewed the existing SQLite database structure and analyzed the available tables and fields.
+->Migrated the existing database structure from SQLite to PostgreSQL.
+->Created the college_db PostgreSQL database for the project.
+->Created the required tables according to the project’s database requirements.
+->Configured the necessary PostgreSQL database settings for local development.
+->Tested the database connection locally to ensure that the backend could communicate successfully with PostgreSQL.
+->Verified that the database structure was ready for further data insertion and backend integration.
+
+
+Problems Faced
+->Understanding the existing SQLite database structure before migration.
+->Making sure the PostgreSQL table structure matched the existing project requirements.
+->Configuring the PostgreSQL connection correctly for local development.
+->Testing and resolving initial database connection issues.
