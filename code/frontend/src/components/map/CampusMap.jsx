@@ -9,22 +9,18 @@ export default function CampusMap({ buildings, selectedBuildingId, onBuildingSel
   return (
     <div className="relative w-full h-full bg-surface-alt rounded-theme-xl overflow-hidden border border-border flex items-center justify-center min-h-[400px]">
       {/* Map Base */}
-      <div className="absolute inset-0 p-4">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-border-light drop-shadow-sm">
-          {/* Background */}
-          <rect width="100" height="100" fill="currentColor" opacity="0.3" rx="4" />
-          {/* Roads */}
-          <path d="M 0 50 Q 50 50 50 0 M 50 50 Q 50 100 100 100 M 0 80 L 100 80 M 80 0 L 80 100"
-                fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="2,2" opacity="0.6" />
-          {/* Buildings */}
-          <rect x="25" y="20" width="20" height="15" rx="1" fill="currentColor" opacity="0.8" />
-          <circle cx="55" cy="25" r="8" fill="currentColor" opacity="0.8" />
-          <path d="M 65 40 L 75 40 L 80 50 L 60 50 Z" fill="currentColor" opacity="0.8" />
-          <rect x="35" y="50" width="20" height="10" rx="1" fill="currentColor" opacity="0.8" />
-          <rect x="15" y="50" width="10" height="20" rx="1" fill="currentColor" opacity="0.8" />
-          <rect x="75" y="65" width="15" height="15" rx="1" fill="currentColor" opacity="0.8" />
-          <rect x="15" y="70" width="20" height="15" rx="1" fill="currentColor" opacity="0.8" />
-        </svg>
+      <div className="absolute inset-0 p-4 flex items-center justify-center">
+        {/* The user will need to place their map image as "campus-map.jpg" in the public/ folder */}
+        <img 
+          src="/campus-map.jpg" 
+          alt="Campus Map" 
+          className="w-full h-full object-contain pointer-events-none drop-shadow-md"
+          onError={(e) => {
+             // Fallback if the image isn't there yet
+             e.target.style.display = 'none';
+             e.target.parentNode.innerHTML = '<div class="text-center text-muted border-2 border-dashed border-border rounded-xl p-8 w-full h-full flex items-center justify-center"><span>Please save your map image as <strong>public/campus-map.jpg</strong></span></div>';
+          }}
+        />
       </div>
 
       {/* Hotspots layer (Data-driven) */}
