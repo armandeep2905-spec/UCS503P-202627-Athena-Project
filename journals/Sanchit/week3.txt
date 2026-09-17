@@ -1,0 +1,15 @@
+Tasks Achieved
+->Started working on the backend structure of the Athena project.
+->Studied the existing backend code and understood its overall structure.
+->Configured the backend to work with the PostgreSQL database.
+->Worked on the database models and table mapping required for the application.
+->Tested database operations such as reading and inserting data.
+->Started integrating the database with the backend.
+->Identified the requirements for handling student and institution-related data.
+->Tested the backend locally and resolved initial integration issues.
+
+Problems Faced
+->Understanding the existing backend code and project structure.
+->Issues while connecting the backend with the PostgreSQL database.
+->Differences between the existing database structure and the backend models.
+->Initial difficulties in correctly mapping database tables with backend models.
