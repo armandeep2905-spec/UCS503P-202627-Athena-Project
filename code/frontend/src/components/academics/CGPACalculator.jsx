@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import CourseAutocomplete from './CourseAutocomplete';
 
 const GRADE_POINTS = {
   'A+': 10, 'A': 10, 'A-': 9, 'B': 8, 'B-': 7, 'C': 6, 'C-': 5, 'F': 0
@@ -9,13 +10,13 @@ const GRADE_POINTS = {
 
 export default function CGPACalculator() {
   const [courses, setCourses] = useState([
-    { id: 1, name: 'Course 1', credits: 4, grade: 'A' },
-    { id: 2, name: 'Course 2', credits: 4, grade: 'B' },
-    { id: 3, name: 'Course 3', credits: 3, grade: 'A+' },
+    { id: 1, name: 'UCS301 — Data Structures', credits: 4, grade: 'A' },
+    { id: 2, name: 'UCS303 — Operating System', credits: 4, grade: 'B' },
+    { id: 3, name: 'UTA018 — Object Oriented Programming', credits: 4, grade: 'A+' },
   ]);
 
   const addCourse = () => {
-    setCourses([...courses, { id: Date.now(), name: `Course ${courses.length + 1}`, credits: 3, grade: 'A' }]);
+    setCourses([...courses, { id: Date.now(), name: '', credits: 3, grade: 'A' }]);
   };
 
   const removeCourse = (id) => {
@@ -28,6 +29,19 @@ export default function CGPACalculator() {
     setCourses(courses.map(c => c.id === id ? { ...c, [field]: value } : c));
   };
 
+  const handleSelectCourse = (id, selectedCourse) => {
+    setCourses(courses.map(c => {
+      if (c.id === id) {
+        return {
+          ...c,
+          name: `${selectedCourse.code} — ${selectedCourse.name}`,
+          credits: selectedCourse.credits
+        };
+      }
+      return c;
+    }));
+  };
+
   const { gpa, totalCredits } = useMemo(() => {
     let tCredits = 0;
     let earnedPoints = 0;
@@ -37,7 +51,7 @@ export default function CGPACalculator() {
       earnedPoints += credits * (GRADE_POINTS[c.grade] || 0);
     });
     return {
-      totalCredits: tCredits,
+      totalCredits: Math.round(tCredits * 10) / 10,
       gpa: tCredits > 0 ? (earnedPoints / tCredits).toFixed(2) : '0.00'
     };
   }, [courses]);
@@ -48,23 +62,25 @@ export default function CGPACalculator() {
         {courses.map((course) => (
           <div key={course.id} className="flex flex-wrap sm:flex-nowrap gap-3 items-end">
             <div className="grow">
-              <Input
-                label="Course Name"
+              <CourseAutocomplete
+                id={`course-${course.id}`}
                 value={course.name}
-                onChange={(e) => updateCourse(course.id, 'name', e.target.value)}
+                onChange={(val) => updateCourse(course.id, 'name', val)}
+                onSelectCourse={(selected) => handleSelectCourse(course.id, selected)}
               />
             </div>
-            <div className="w-24">
+            <div className="w-28 shrink-0">
               <Input
                 label="Credits"
                 type="number"
-                min="1"
-                max="10"
+                step="0.5"
+                min="0.5"
+                max="20"
                 value={course.credits}
                 onChange={(e) => updateCourse(course.id, 'credits', e.target.value)}
               />
             </div>
-            <div className="w-24">
+            <div className="w-24 shrink-0">
               <label className="block text-sm font-medium text-on-surface mb-1.5">Grade</label>
               <select
                 className="w-full px-3 py-2.5 rounded-theme-md border border-border bg-surface text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
@@ -79,7 +95,7 @@ export default function CGPACalculator() {
             <button
               onClick={() => removeCourse(course.id)}
               disabled={courses.length <= 1}
-              className="mb-1.5 p-2 rounded-theme-md text-muted hover:text-danger hover:bg-danger-light disabled:opacity-50 transition-colors"
+              className="mb-1.5 p-2 rounded-theme-md text-muted hover:text-danger hover:bg-danger-light disabled:opacity-50 transition-colors shrink-0"
               aria-label="Remove course"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
