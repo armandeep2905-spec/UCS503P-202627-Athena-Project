@@ -14,3 +14,6 @@ Roll No. 1024031169
 - [W5 : Project Prototype Report and 2D Navigation Development](https://github.com/nipun1015/UCS503P-202627-Athena-Project/blob/master/journals/1024031169-nipun/w5-athena.md)
 
 - [W6 : Campus Road-Network Overhaul and Navigation Logic Redesign](https://github.com/nipun1015/UCS503P-202627-Athena-Project/blob/master/journals/1024031169-nipun/w6-athena.md)
+
+- [W7 : Campus Road Connectivity and Route Accuracy Improvements](https://github.com/nipun1015/UCS503P-202627-Athena-Project/blob/master/journals/1024031169-nipun/w7-athena.md)
+  
