@@ -195,35 +195,67 @@ class TIETRAGService:
     # Specialized Entity Matchers
     # ---------------------------------------------------------
 
+    COMMON_NON_NAMES = {
+        "the", "and", "for", "with", "from", "that", "this", "what", "which", "where", "when",
+        "how", "who", "why", "can", "tell", "give", "show", "about", "please", "all", "any",
+        "some", "details", "info", "information", "thapar", "tiet", "campus", "course", "courses",
+        "subject", "subjects", "semester", "sem", "exam", "exams", "result", "grade", "grades",
+        "cgpa", "sgpa", "hostel", "mess", "fees", "fee", "scholarship", "library", "sports",
+        "mail", "email", "contact", "phone", "number", "office", "cabin", "room", "profile",
+        "faculty", "prof", "dr", "teacher", "sir", "maam", "head", "dean", "hod", "department",
+        "dept", "is", "in", "at", "to", "of", "a", "an", "do", "does", "send", "get"
+    }
+
+    FACULTY_INTENT_KEYWORDS = {
+        "faculty", "dr", "prof", "professor", "teacher", "sir", "maam", "hod", "head", "dean",
+        "instructor", "mail", "email", "contact", "phone", "number", "office", "cabin", "room",
+        "profile", "reach", "id", "details", "info", "who", "address"
+    }
+
     def match_faculty(self, query: str) -> List[Dict[str, Any]]:
         """Identify faculty members mentioned by name, department, or title."""
         q_lower = query.lower()
-        # Clean query for name searching
         cleaned = re.sub(r"[^\w\s]", " ", q_lower)
         words = set(cleaned.split())
-        
+        has_intent = any(k in words for k in self.FACULTY_INTENT_KEYWORDS)
+
         matched = []
-        
-        # 1. Direct name match (e.g. 'Neeraj Kumar', 'Seema Bawa', 'Shalini Batra')
+
+        # 1. Direct name match & partial parts matching
         for fac in self.faculty_list:
             name = fac.get("name", "")
             raw_name = re.sub(r"^(dr\.|mr\.|ms\.|prof\.)\s*", "", name.lower()).strip()
             name_parts = [p for p in raw_name.split() if len(p) > 2]
-            
-            # Check full name in query
-            if raw_name and raw_name in q_lower:
+            if not name_parts:
+                continue
+
+            # Full raw name exact substring (e.g. 'neeraj kumar', 'seema bawa')
+            if raw_name in q_lower:
                 matched.append((fac, 10))
                 continue
-            
-            # Check if all distinctive name parts are in words
+
+            # All distinctive parts present in query words
             if len(name_parts) >= 2 and all(p in words for p in name_parts):
-                matched.append((fac, 8))
+                matched.append((fac, 9))
                 continue
-            
-            # Match single distinctive last name or first name if paired with faculty/dr
-            if any(k in words for k in ["faculty", "dr", "prof", "professor", "teacher", "sir", "maam"]):
-                if any(p in words for p in name_parts):
-                    matched.append((fac, 5))
+
+            # First name match against query words (e.g. 'neeraj mail', 'seema email')
+            first_name = name_parts[0]
+            if first_name in words and first_name not in self.COMMON_NON_NAMES:
+                score = 8 if has_intent else 6
+                matched.append((fac, score))
+                continue
+
+            # Distinctive surname/middle name match
+            for p in name_parts[1:]:
+                if p in words and p not in self.COMMON_NON_NAMES:
+                    if p in {"kumar", "singh", "sharma", "kaur", "verma", "gupta"}:
+                        if has_intent and len(words - self.COMMON_NON_NAMES) <= 2:
+                            matched.append((fac, 4))
+                    else:
+                        score = 7 if has_intent else 5
+                        matched.append((fac, score))
+                    break
 
         # 2. Department match if query asks for faculty in a department
         dept_keywords = {
@@ -235,11 +267,10 @@ class TIETRAGService:
             "CHED": ["ched", "chemical"],
             "BTD": ["btd", "biotech", "biotechnology"]
         }
-        
+
         if any(w in words for w in ["faculty", "professors", "teachers", "staff", "hod", "head", "dean"]):
             for dept, kws in dept_keywords.items():
                 if any(kw in q_lower for kw in kws):
-                    # Add top faculty from that department (e.g., Head, Deans, Professors)
                     dept_facs = [f for f in self.faculty_list if f.get("department") == dept]
                     for df in dept_facs[:8]:
                         matched.append((df, 4))
@@ -256,7 +287,7 @@ class TIETRAGService:
                 results.append(fac)
             if len(results) >= 6:
                 break
-                
+
         return results
 
     def match_courses_and_cgpa(self, query: str) -> Tuple[List[Dict[str, Any]], bool]:
@@ -481,7 +512,7 @@ class TIETRAGService:
             f"{citation_instruction}\n\n"
             "Answering Rules:\n"
             "1. Answer concisely, cleanly, and directly.\n"
-            "2. When faculty are asked, list their full name, official designation, and department directly.\n"
+            "2. When faculty or their contact details/emails are asked (e.g., 'neeraj mail', 'email of seema'), provide their full name, official designation, department, and official email address directly from the verified faculty directory. If multiple faculty share the same name, list all matching faculty members with their respective departments and email addresses.\n"
             "3. When subjects or semester courses are asked (e.g., 'What subjects in semester 3?'), list the exact course codes, subject names, and credit values directly from the curriculum without asking the user for clarification.\n"
             "4. When CGPA/SGPA is asked, provide the exact formula and the Thapar grade point table.\n"
             "5. When academic regulations are asked, state exact numbers (e.g. 75% minimum attendance requirement, 'X' grade for detention/repeat, pass grades A+ to C, fail grades E/F/X).\n"
@@ -507,10 +538,10 @@ class TIETRAGService:
 
         # Try high-speed active models with fallbacks
         models_to_try = [
-            "gemini-3-flash-preview",
             "gemini-3.1-flash-lite",
             "gemini-2.5-flash",
-            "gemma-4-26b-a4b-it"
+            "gemini-3-flash-preview",
+            "gemini-3.1-flash-lite-preview",
         ]
 
         for model_name in models_to_try:
@@ -526,9 +557,8 @@ class TIETRAGService:
                             if parts:
                                 return parts[0].get("text", "").strip()
                     elif resp.status_code == 429:
-                        print(f"[TIETRAGService] {model_name} rate limit (429), pausing 2s...")
-                        time.sleep(2)
-                        continue
+                        print(f"[TIETRAGService] {model_name} rate limit (429), trying next model...")
+                        break
                     elif resp.status_code == 503:
                         print(f"[TIETRAGService] {model_name} 503 spike, trying fallback...")
                         break
@@ -551,8 +581,16 @@ class TIETRAGService:
     ) -> str:
         """Direct answer fallback if API is unreachable."""
         if faculty:
-            f = faculty[0]
-            return f"{f.get('name')} is {f.get('designation')} in the Department of {f.get('department')} at Thapar Institute of Engineering & Technology."
+            lines = []
+            for f in faculty[:3]:
+                email = f.get('email', 'N/A')
+                contact = f.get('contact', 'N/A')
+                contact_str = f", Contact: {contact}" if contact and contact != 'N/A' else ""
+                email_str = f", Email: {email}" if email and email != 'N/A' else ""
+                lines.append(
+                    f"{f.get('name')} — {f.get('designation')}, Department of {f.get('department')}{email_str}{contact_str}"
+                )
+            return "\n".join(lines)
         if courses:
             lines = [f"{c.get('code')} — {c.get('name')} ({c.get('credits')} credits)" for c in courses[:6]]
             return "Courses:\n" + "\n".join(lines)
