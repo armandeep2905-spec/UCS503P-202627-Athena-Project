@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageShell from '../components/layout/PageShell';
 import NavTile from '../components/dashboard/NavTile';
 import ReminderCard from '../components/dashboard/ReminderCard';
@@ -10,7 +11,8 @@ import { useFetch } from '../hooks/useFetch';
 import { getReminders, createReminder } from '../api/reminders';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const { data: reminders, loading, setData: setReminders } = useFetch(getReminders);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -31,9 +33,23 @@ export default function DashboardPage() {
     <PageShell>
       <div className="space-y-8 animate-fade-in pb-12">
         {/* Welcome Section */}
-        <section>
-          <h1 className="text-3xl font-bold text-on-surface mb-2">Welcome back, {user?.name?.split(' ')[0] || 'Student'}</h1>
-          <p className="text-muted">Here's what's happening on campus today.</p>
+        <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-on-surface mb-2">Welcome back, {user?.name?.split(' ')[0] || 'Student'}</h1>
+            <p className="text-muted">Here's what's happening on campus today.</p>
+          </div>
+          <button
+            onClick={() => {
+              logout();
+              navigate('/login');
+            }}
+            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-theme-md text-xs font-medium text-danger border border-danger/30 hover:bg-danger/10 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sign Out
+          </button>
         </section>
 
         {/* Navigation Hub */}

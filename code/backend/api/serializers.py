@@ -67,9 +67,12 @@ class RegisterSerializer(serializers.Serializer):
     institution_id = serializers.IntegerField()
 
     def validate_email(self, value):
-        if User.objects.filter(email__iexact=value).exists():
+        email = value.lower().strip()
+        if not email.endswith("@thapar.edu"):
+            raise serializers.ValidationError("Only emails with the @thapar.edu domain can be registered.")
+        if User.objects.filter(email__iexact=email).exists():
             raise serializers.ValidationError("An account with this email already exists.")
-        return value
+        return email
 
     def validate_institution_id(self, value):
         if not Institution.objects.filter(id=value).exists():
@@ -83,9 +86,11 @@ class LoginSerializer(serializers.Serializer):
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
+    domain = serializers.CharField(source="email_domain", read_only=True)
+
     class Meta:
         model = Institution
-        fields = ["id", "name", "email_domain", "address"]
+        fields = ["id", "name", "email_domain", "domain", "address"]
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

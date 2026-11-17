@@ -39,15 +39,15 @@ export async function register(data) {
 
 /**
  * Verify student email against institution domain.
- * MOCK for now — checks if email ends with the institution's domain.
- * Will hit POST /api/auth/verify when backend is ready.
+ * Strictly verifies that the email belongs to @thapar.edu or the institution's domain.
  */
 export async function verifyEmail(email, institutionDomain) {
   // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
+  const targetDomain = (institutionDomain || 'thapar.edu').toLowerCase();
   const emailDomain = email.split('@')[1]?.toLowerCase();
-  const isValid = emailDomain === institutionDomain?.toLowerCase();
+  const isValid = emailDomain === targetDomain;
 
   if (isValid) {
     return { data: { verified: true, message: 'Email verified successfully.' } };
@@ -55,7 +55,7 @@ export async function verifyEmail(email, institutionDomain) {
   return {
     error: {
       status: 400,
-      detail: `Email must belong to @${institutionDomain}`,
+      detail: `Email must belong to @${targetDomain}`,
     },
   };
 }

@@ -40,35 +40,10 @@ export default function PageShell({ children, title, showBack = false }) {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            {isAuthenticated && (
-              <>
-                <button
-                  onClick={() => alert('Settings module coming soon!')}
-                  className="p-2 rounded-theme-sm text-muted hover:text-on-surface hover:bg-surface-alt transition-colors"
-                  aria-label="Settings"
-                  title="Settings"
-                >
-                  <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </button>
-                {isDashboard && user && (
-                  <span className="hidden sm:block text-xs text-muted mr-1 ml-2 border-l border-border pl-3">
-                    {user.name || user.email}
-                  </span>
-                )}
-                <button
-                  onClick={() => { logout(); navigate('/'); }}
-                  className="p-2 rounded-theme-sm text-muted hover:text-danger hover:bg-danger-light transition-colors"
-                  aria-label="Logout"
-                  title="Logout"
-                >
-                  <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              </>
+            {isAuthenticated && user && (
+              <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-theme-sm text-xs font-medium bg-surface-alt text-on-surface border border-border">
+                {user.name || user.email}
+              </span>
             )}
           </div>
         </div>
