@@ -1,27 +1,39 @@
 /**
- * Query API — mock RAG responses.
- * Keyword-matches user input against mock response bank.
+ * Query API — Live RAG with Gemini + Official TIET Documents.
+ * Calls Django backend POST /api/query/ with graceful offline fallback.
  */
-import responses from '../mocks/queryResponses.json';
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+import { fetchClient } from './client';
+import fallbackResponses from '../mocks/queryResponses.json';
 
 /**
  * Send a query and receive a grounded answer with source citations.
  * @param {string} question
- * @returns {Promise<{ data?: { answer: string, sources: object[], locationId: number|null } }>}
+ * @returns {Promise<{ data: { answer: string, sources: object[], locationId: number|null } }>}
  */
 export async function sendQuery(question) {
-  // Simulate RAG processing time
-  await delay(800 + Math.random() * 700);
+  try {
+    const { data, error } = await fetchClient('/api/query/', {
+      method: 'POST',
+      body: JSON.stringify({ question }),
+    });
 
+    if (data && data.answer) {
+      return { data };
+    }
+
+    if (error) {
+      console.warn('Live API response error, checking local fallback:', error);
+    }
+  } catch (err) {
+    console.warn('Backend query unreachable, falling back to local bank:', err);
+  }
+
+  // Fallback to local response bank if backend is not running
   const q = question.toLowerCase();
-
-  // Find the best matching response by keyword overlap
   let bestMatch = null;
   let bestScore = 0;
 
-  for (const resp of responses) {
+  for (const resp of fallbackResponses) {
     if (resp.keywords.includes('default')) continue;
     const score = resp.keywords.reduce(
       (acc, kw) => acc + (q.includes(kw) ? 1 : 0),
@@ -33,16 +45,23 @@ export async function sendQuery(question) {
     }
   }
 
-  // Fall back to default response
   if (!bestMatch || bestScore === 0) {
-    bestMatch = responses.find((r) => r.keywords.includes('default'));
+    bestMatch = Array.isArray(fallbackResponses) ? fallbackResponses.find((r) => r.keywords && r.keywords.includes('default')) : null;
+  }
+
+  if (!bestMatch) {
+    bestMatch = {
+      answer: "I'm Athena, your campus assistant. How can I assist you with Thapar academics, courses, regulations, or campus facilities today?",
+      sources: [],
+      locationId: null,
+    };
   }
 
   return {
     data: {
-      answer: bestMatch.answer,
-      sources: bestMatch.sources,
-      locationId: bestMatch.locationId,
+      answer: bestMatch.answer || "I could not find an answer right now.",
+      sources: Array.isArray(bestMatch.sources) ? bestMatch.sources : [],
+      locationId: bestMatch.locationId || null,
     },
   };
 }

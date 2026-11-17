@@ -14,10 +14,12 @@ export default function MessageBubble({ message, onViewOnMap }) {
           }
         `}
       >
-        <p className="whitespace-pre-wrap">{message.text}</p>
+        <p className="whitespace-pre-wrap">
+          {typeof message.text === 'string' ? message.text : (message.text ? JSON.stringify(message.text) : '')}
+        </p>
 
         {/* Source citations */}
-        {!isUser && message.sources && message.sources.length > 0 && (
+        {!isUser && Array.isArray(message.sources) && message.sources.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {message.sources.map((source, idx) => (
               <CitationChip key={idx} source={source} />
@@ -28,7 +30,7 @@ export default function MessageBubble({ message, onViewOnMap }) {
         {/* View on map action */}
         {!isUser && message.locationId && (
           <button
-            onClick={() => onViewOnMap(message.locationId)}
+            onClick={() => onViewOnMap && onViewOnMap(message.locationId)}
             className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

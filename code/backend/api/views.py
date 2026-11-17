@@ -6,12 +6,14 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models import Building, Course, Event, Institution, Reminder, Society, Student
+from core.models import Building, Course, Event, Faculty, Institution, Reminder, Society, Student
+from core.rag_service import get_rag_service
 
 from .serializers import (
     BuildingSerializer,
     CourseSerializer,
     EventSerializer,
+    FacultySerializer,
     InstitutionSerializer,
     LoginSerializer,
     QuerySerializer,
@@ -82,30 +84,39 @@ class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
     """Replaces courses.js mock — GET /api/courses/"""
-    queryset = Course.objects.select_related("department").all()
+    queryset = Course.objects.select_related("department").all().order_by("id")
     serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+    pagination_class = None
+
+
+class FacultyViewSet(viewsets.ReadOnlyModelViewSet):
+    """Replaces faculty.js mock — GET /api/faculty/"""
+    queryset = Faculty.objects.select_related("department").all().order_by("id")
+    serializer_class = FacultySerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     """Replaces events.js mock — GET /api/events/"""
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class SocietyViewSet(viewsets.ReadOnlyModelViewSet):
     """Replaces societies.js mock — GET /api/societies/"""
     queryset = Society.objects.all()
     serializer_class = SocietySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
     """Replaces map.js mock — GET /api/map/locations/, GET /api/map/locations/{id}/"""
     queryset = Building.objects.prefetch_related("floors__rooms").all()
     serializer_class = BuildingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class ReminderListCreateView(generics.ListCreateAPIView):
@@ -119,22 +130,25 @@ class ReminderListCreateView(generics.ListCreateAPIView):
 
 class QueryView(APIView):
     """
-    POST /api/query/ — placeholder for the real RAG pipeline (embeddings +
-    vector retrieval + LLM). Currently returns a canned response so the
-    frontend can integrate against a real endpoint shape before the RAG
-    pipeline is built.
+    POST /api/query/ — live RAG pipeline grounded on official TIET documents,
+    retrieving from FTS5 SQLite index and answering via Google Gemini API.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = QuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         question = serializer.validated_data["question"]
 
-        return Response(
-            {
-                "answer": f"(placeholder) RAG pipeline not wired up yet. You asked: \"{question}\"",
+        try:
+            rag_service = get_rag_service()
+            response_data = rag_service.answer_query(question)
+        except Exception as e:
+            print(f"[QueryView] Error answering query: {e}")
+            response_data = {
+                "answer": "I could not retrieve an answer right now. Please consult the Thapar academic regulations or contact the Dean of Academic Affairs (DoAA).",
                 "sources": [],
                 "locationId": None,
             }
-        )
+
+        return Response(response_data, status=status.HTTP_200_OK)

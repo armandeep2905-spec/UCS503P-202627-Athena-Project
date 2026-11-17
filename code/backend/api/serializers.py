@@ -6,6 +6,7 @@ from core.models import (
     Course,
     Department,
     Event,
+    Faculty,
     Floor,
     Institution,
     Reminder,
@@ -17,14 +18,46 @@ from core.models import (
 
 class UserPublicSerializer(serializers.ModelSerializer):
     """The `user` object shape returned alongside the auth token."""
-    name = serializers.CharField(source="student_profile.name")
-    institutionId = serializers.IntegerField(source="student_profile.institution_id")
-    rollNumber = serializers.CharField(source="student_profile.roll_number", allow_null=True)
-    isVerified = serializers.BooleanField(source="student_profile.is_verified")
+    name = serializers.SerializerMethodField()
+    institutionId = serializers.SerializerMethodField()
+    rollNumber = serializers.SerializerMethodField()
+    isVerified = serializers.SerializerMethodField()
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "email", "name", "institutionId", "rollNumber", "isVerified"]
+        fields = ["id", "email", "name", "institutionId", "rollNumber", "isVerified", "role"]
+
+    def get_name(self, obj):
+        if hasattr(obj, "admin_profile") and obj.admin_profile:
+            return obj.admin_profile.name
+        if hasattr(obj, "student_profile") and obj.student_profile:
+            return obj.student_profile.name
+        return obj.get_full_name() or obj.username
+
+    def get_institutionId(self, obj):
+        if hasattr(obj, "admin_profile") and obj.admin_profile:
+            return obj.admin_profile.institution_id
+        if hasattr(obj, "student_profile") and obj.student_profile:
+            return obj.student_profile.institution_id
+        return None
+
+    def get_rollNumber(self, obj):
+        if hasattr(obj, "student_profile") and obj.student_profile:
+            return obj.student_profile.roll_number
+        return None
+
+    def get_isVerified(self, obj):
+        if hasattr(obj, "admin_profile") and obj.admin_profile:
+            return True
+        if hasattr(obj, "student_profile") and obj.student_profile:
+            return obj.student_profile.is_verified
+        return False
+
+    def get_role(self, obj):
+        if hasattr(obj, "admin_profile") or obj.is_staff or obj.is_superuser:
+            return "admin"
+        return "student"
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -63,10 +96,49 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.department_name", read_only=True)
+    # Aliases so the frontend can seamlessly read either code/name or course_code/course_name
+    code = serializers.CharField(source="course_code", read_only=True)
+    name = serializers.CharField(source="course_name", read_only=True)
+    faculty = serializers.CharField(source="semester", read_only=True)
+    syllabusLink = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ["id", "course_code", "course_name", "department", "department_name"]
+        fields = [
+            "id", "course_code", "course_name",
+            "code", "name",
+            "credits", "semester", "faculty",
+            "syllabusLink",
+            "department", "department_name",
+        ]
+
+    def get_syllabusLink(self, obj):
+        return obj.syllabus_link or "https://www.thapar.edu/upload/files/BECSE_2024.pdf"
+
+
+class FacultySerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source="department.department_name", read_only=True)
+    departmentCode = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Faculty
+        fields = [
+            "id", "name", "designation", "email", "contact", "office",
+            "department", "department_name", "departmentCode",
+        ]
+
+    def get_departmentCode(self, obj):
+        name = obj.department.department_name if obj.department else ""
+        code_map = {
+            "Computer Science & Engineering": "CSED",
+            "Electronics & Communication Engineering": "ECED",
+            "Electrical & Instrumentation Engineering": "EIED",
+            "Mechanical Engineering": "MED",
+            "Civil Engineering": "CED",
+            "Chemical Engineering": "CHED",
+            "Biotechnology": "BTD",
+        }
+        return code_map.get(name, name)
 
 
 class EventSerializer(serializers.ModelSerializer):

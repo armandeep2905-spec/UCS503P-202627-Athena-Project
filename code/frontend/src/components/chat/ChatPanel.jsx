@@ -45,16 +45,19 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
     setIsTyping(true);
 
     try {
-      const { data } = await sendQuery(text);
+      const res = await sendQuery(text);
+      const data = res?.data || {};
+      const answer = data?.answer || (typeof data === 'string' ? data : 'I could not find an answer.');
       const assistantMsg = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        text: data.answer,
-        sources: data.sources || [],
-        locationId: data.locationId,
+        text: typeof answer === 'string' ? answer : JSON.stringify(answer),
+        sources: Array.isArray(data?.sources) ? data.sources : [],
+        locationId: data?.locationId || null,
       };
       setMessages((prev) => [...prev, assistantMsg]);
-    } catch {
+    } catch (err) {
+      console.error('Chat error:', err);
       setMessages((prev) => [
         ...prev,
         {
