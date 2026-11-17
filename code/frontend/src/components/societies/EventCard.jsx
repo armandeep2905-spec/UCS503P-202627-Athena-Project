@@ -5,7 +5,6 @@ export default function EventCard({ event = {} }) {
   const venue = event?.venue || event?.location || 'Campus';
   const rawDate = event?.date || event?.event_date;
 
-  // Robust Safari-compatible date formatting that will never throw RangeError
   let month = 'EVT';
   let day = '•';
 
@@ -26,24 +25,26 @@ export default function EventCard({ event = {} }) {
   }
 
   return (
-    <Card className="flex flex-col sm:flex-row gap-5 hover:border-accent/40 transition-colors group">
-      {/* Date Block */}
-      <div className="flex flex-col items-center justify-center w-16 h-16 rounded-theme-md bg-accent-light text-accent shrink-0 border border-accent/20">
-        <span className="text-[11px] font-bold tracking-wider">{month}</span>
-        <span className="text-xl font-bold leading-none">{day}</span>
+    <Card className="flex flex-col sm:flex-row gap-4 hover:border-secondary/30 transition-colors p-4">
+      {/* Date Marker */}
+      <div className="flex flex-col items-center justify-center w-12 h-12 rounded-theme-md bg-surface-alt text-on-surface shrink-0 border border-border">
+        <span className="text-[10px] font-mono text-muted uppercase leading-none">{month}</span>
+        <span className="text-base font-semibold leading-tight font-mono mt-0.5">{day}</span>
       </div>
 
       {/* Details */}
-      <div className="flex-1">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-          <h3 className="text-base font-semibold text-on-surface group-hover:text-accent transition-colors">
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 mb-1">
+          <h3 className="text-xs font-semibold text-on-surface truncate">
             {title}
           </h3>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-muted border border-border shrink-0">
+          <span className="text-[10px] font-mono text-muted shrink-0">
             {venue}
           </span>
         </div>
-        <p className="text-sm text-muted line-clamp-2">{event?.description || 'No description available.'}</p>
+        <p className="text-xs text-secondary line-clamp-2 leading-relaxed">
+          {event?.description || 'No additional details provided.'}
+        </p>
       </div>
     </Card>
   );

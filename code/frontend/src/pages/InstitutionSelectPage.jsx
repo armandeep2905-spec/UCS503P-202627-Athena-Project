@@ -39,7 +39,7 @@ export default function InstitutionSelectPage() {
     const res = await verifyEmail(email, targetDomain);
 
     if (res.error) {
-      setVerifyError(res.error.detail || 'Verification failed.');
+      setVerifyError(res.error.detail || 'Verification failed. Please use your valid @thapar.edu address.');
       setVerifyLoading(false);
     } else {
       selectInstitution(selectedInst);
@@ -48,23 +48,26 @@ export default function InstitutionSelectPage() {
     }
   };
 
-  const filteredInstitutions = institutions?.filter(inst =>
+  const filteredInstitutions = institutions?.filter((inst) =>
     inst.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <PageShell showBack={true} title="Select Institution">
-      <div className="max-w-3xl mx-auto py-8">
+    <PageShell showBack={true} title="Enrollment Verification">
+      <div className="max-w-2xl mx-auto py-8">
         {!selectedInst ? (
-          <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-on-surface mb-2">Find your college</h2>
-            <p className="text-muted mb-6">Select your institution to access verified campus information.</p>
+          <div className="animate-fade-in space-y-5">
+            <div className="pb-3 border-b border-border">
+              <h2 className="text-base font-semibold text-on-surface">Select Institutional Campus</h2>
+              <p className="text-xs text-secondary mt-0.5">
+                Verify your institutional domain to load verified course schemes and schedules
+              </p>
+            </div>
 
             <Input
-              placeholder="Search institutions..."
+              placeholder="Search by institution name (e.g. Thapar Institute)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="mb-6"
             />
 
             {loading ? (
@@ -72,24 +75,31 @@ export default function InstitutionSelectPage() {
             ) : error ? (
               <ErrorState onRetry={execute} />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 {filteredInstitutions?.map((inst) => (
                   <Card
                     key={inst.id}
                     onClick={() => handleSelect(inst)}
-                    className="cursor-pointer hover:border-primary transition-colors flex items-center gap-4"
+                    className="cursor-pointer hover:border-secondary/40 transition-colors flex items-center justify-between p-4"
                   >
-                    <div className="w-12 h-12 rounded bg-surface-alt flex items-center justify-center shrink-0 border border-border">
-                      {inst.logo ? <img src={inst.logo} alt={inst.name} /> : <span className="font-bold text-muted">{inst.name.charAt(0)}</span>}
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-theme-sm bg-surface-alt border border-border flex items-center justify-center font-mono font-medium text-secondary text-sm">
+                        {inst.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-semibold text-on-surface leading-tight">
+                          {inst.name}
+                        </h3>
+                        <p className="text-[11px] font-mono text-muted mt-0.5">
+                          @{inst.domain || inst.email_domain || 'thapar.edu'}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-on-surface line-clamp-1">{inst.name}</h3>
-                      <p className="text-xs text-muted">@{inst.domain || inst.email_domain || 'thapar.edu'}</p>
-                    </div>
+                    <span className="text-xs font-mono text-primary">Select →</span>
                   </Card>
                 ))}
                 {filteredInstitutions?.length === 0 && (
-                  <div className="col-span-full py-8 text-center text-muted">
+                  <div className="py-8 text-center text-xs text-muted font-mono">
                     No institutions found matching "{search}".
                   </div>
                 )}
@@ -97,36 +107,40 @@ export default function InstitutionSelectPage() {
             )}
           </div>
         ) : (
-          <div className="animate-fade-in max-w-md mx-auto">
+          <div className="animate-fade-in max-w-sm mx-auto space-y-5">
             <button
               onClick={() => setSelectedInst(null)}
-              className="text-sm text-primary font-medium hover:underline mb-6 inline-flex items-center gap-1"
+              className="text-xs text-secondary hover:text-on-surface inline-flex items-center gap-1 font-mono"
             >
-              ← Back to list
+              ← Back to institution list
             </button>
 
-            <Card className="text-center mb-6 py-8">
-              <div className="w-16 h-16 rounded-theme-lg bg-surface-alt flex items-center justify-center mx-auto mb-4 border border-border">
-                 <span className="text-2xl font-bold text-muted">{selectedInst.name.charAt(0)}</span>
+            <Card className="text-left p-5 border border-border bg-surface-raised">
+              <div className="flex items-center gap-3 pb-3 border-b border-border mb-4">
+                <div className="w-8 h-8 rounded-theme-sm bg-surface-alt border border-border flex items-center justify-center font-mono text-xs text-secondary">
+                  {selectedInst.name.charAt(0)}
+                </div>
+                <div>
+                  <h3 className="text-xs font-semibold text-on-surface">{selectedInst.name}</h3>
+                  <span className="text-[10px] font-mono text-muted">Domain verification required</span>
+                </div>
               </div>
-              <h2 className="text-xl font-bold text-on-surface mb-1">{selectedInst.name}</h2>
-              <p className="text-sm text-muted">Please verify your affiliation.</p>
-            </Card>
 
-            <form onSubmit={handleVerify} className="space-y-4">
-              <Input
-                label="Institutional Email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={`student@${selectedInst.domain || selectedInst.email_domain || 'thapar.edu'}`}
-                error={verifyError}
-              />
-              <Button type="submit" className="w-full" loading={verifyLoading}>
-                Verify Email
-              </Button>
-            </form>
+              <form onSubmit={handleVerify} className="space-y-4">
+                <Input
+                  label="Institutional Email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={`student@${selectedInst.domain || selectedInst.email_domain || 'thapar.edu'}`}
+                  error={verifyError}
+                />
+                <Button type="submit" className="w-full h-9" loading={verifyLoading}>
+                  Verify & Proceed
+                </Button>
+              </form>
+            </Card>
           </div>
         )}
       </div>

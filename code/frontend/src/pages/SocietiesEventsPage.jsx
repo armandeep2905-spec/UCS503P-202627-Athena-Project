@@ -24,14 +24,16 @@ export default function SocietiesEventsPage() {
     : [];
 
   return (
-    <PageShell showBack={true} title="Societies & Events">
-      <div className="space-y-12 animate-fade-in pb-12">
-
+    <PageShell showBack={true} title="Campus Life & Notices">
+      <div className="space-y-10 animate-fade-in pb-10">
         {/* Upcoming Events Section */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-on-surface">Upcoming Events</h2>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-light text-accent">
+        <section className="space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-border">
+            <div>
+              <h2 className="text-base font-semibold text-on-surface">Scheduled Events & Workshops</h2>
+              <p className="text-xs text-secondary mt-0.5 font-mono">Official TIET academic seminars, cultural fests, and hackathons</p>
+            </div>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-theme-sm text-xs font-mono bg-surface-alt text-secondary border border-border">
               {events?.length || 0} Events
             </span>
           </div>
@@ -41,21 +43,21 @@ export default function SocietiesEventsPage() {
           ) : evtError ? (
             <ErrorState />
           ) : events && events.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {events.map(evt => (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+              {events.map((evt) => (
                 <EventCard key={evt.id} event={evt} />
               ))}
             </div>
           ) : (
-            <p className="text-muted">No upcoming events scheduled.</p>
+            <p className="text-xs text-muted">No upcoming campus events currently listed.</p>
           )}
         </section>
 
         {/* Societies Section */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-on-surface mb-2">Campus Societies</h2>
-            <p className="text-muted">Join a club, explore your interests, and build your network.</p>
+        <section className="space-y-4">
+          <div className="pb-2 border-b border-border">
+            <h2 className="text-base font-semibold text-on-surface">Student Societies & Technical Chapters</h2>
+            <p className="text-xs text-secondary mt-0.5 font-mono">Recognized student societies, ACM/IEEE branches, and campus cultural clubs</p>
           </div>
 
           {socLoading ? (
@@ -63,16 +65,15 @@ export default function SocietiesEventsPage() {
           ) : socError ? (
             <ErrorState />
           ) : societies && societies.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {societies.map(soc => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {societies.map((soc) => (
                 <SocietyCard key={soc.id} society={soc} />
               ))}
             </div>
           ) : (
-            <p className="text-muted">No societies found.</p>
+            <p className="text-xs text-muted">No societies registered in database.</p>
           )}
         </section>
-
       </div>
     </PageShell>
   );

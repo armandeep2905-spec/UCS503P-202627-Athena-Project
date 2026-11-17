@@ -8,7 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
         primary:         'var(--color-primary)',
@@ -21,6 +22,7 @@ export default {
         'surface-raised':'var(--color-surface-raised)',
         'on-surface':    'var(--color-on-surface)',
         'on-primary':    'var(--color-on-primary)',
+        secondary:       'var(--color-secondary)',
         muted:           'var(--color-muted)',
         border:          'var(--color-border)',
         'border-light':  'var(--color-border-light)',

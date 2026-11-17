@@ -3,7 +3,7 @@ export default function Card({ children, className = '', padding = true, ...prop
     <div
       className={`
         bg-surface-raised border border-border rounded-theme-lg shadow-theme-sm
-        transition-shadow duration-200
+        transition-colors duration-150
         ${padding ? 'p-5' : ''}
         ${className}
       `}

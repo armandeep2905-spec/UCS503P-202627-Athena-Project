@@ -20,7 +20,6 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If they somehow land here without verifying, send them back
   useEffect(() => {
     if (!selectedInstitution || !isVerified) {
       navigate('/select-institution', { replace: true });
@@ -46,7 +45,7 @@ export default function RegisterPage() {
       name,
       email,
       password,
-      institutionId: selectedInstitution.id
+      institutionId: selectedInstitution.id,
     });
 
     if (res.error) {
@@ -58,21 +57,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <PageShell showBack={true} title="Create Account">
+    <PageShell showBack={true} title="Create Student Profile">
       <div className="flex justify-center py-8">
-        <Card className="w-full max-w-md p-8 animate-fade-in">
-          <div className="mb-6 pb-6 border-b border-border text-center">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-success-light text-success border border-success/20 mb-3">
-              <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Institution Verified
+        <Card className="w-full max-w-sm p-6 sm:p-7 animate-fade-in border border-border bg-surface-raised shadow-theme-md">
+          <div className="mb-5 pb-4 border-b border-border text-left">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-theme-sm text-[11px] font-mono bg-surface-alt text-secondary border border-border mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              Verified: {selectedInstitution.name}
             </span>
-            <h2 className="text-lg font-bold text-on-surface">{selectedInstitution.name}</h2>
+            <h1 className="text-base font-semibold text-on-surface">Complete Registration</h1>
+            <p className="text-xs text-secondary mt-0.5 font-mono">Create your Athena portal credentials</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-3 bg-danger-light text-danger text-sm rounded-theme-md border border-danger/20">
+            <div className="mb-4 p-3 bg-danger-light text-danger text-xs rounded-theme-md border border-danger/30 font-mono">
               {error}
             </div>
           )}
@@ -84,34 +82,34 @@ export default function RegisterPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
+              placeholder="e.g. Arman Sharma"
             />
             <Input
-              label="Institutional Email"
+              label="Institutional Email (Verified)"
               type="email"
               required
               readOnly
               value={email}
-              className="bg-surface-alt text-muted cursor-not-allowed"
+              className="bg-surface-alt text-muted cursor-not-allowed font-mono text-xs"
             />
             <Input
-              label="Password"
+              label="Choose Password"
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="••••••••••••"
               minLength={8}
             />
-            <Button type="submit" className="w-full mt-2" loading={loading}>
-              Create Account
+            <Button type="submit" className="w-full h-9 mt-2" loading={loading}>
+              Create Student Account
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted">
-            Already have an account?{' '}
+          <p className="mt-5 pt-4 border-t border-border text-center text-xs text-secondary">
+            Already registered?{' '}
             <Link to="/login" className="text-primary hover:underline font-medium">
-              Log in
+              Sign In →
             </Link>
           </p>
         </Card>
