@@ -23,7 +23,7 @@ function getToken() {
  * @returns {Promise<{ data?: any, error?: any }>}
  */
 export async function fetchClient(endpoint, options = {}) {
-  const { skipAuth = false, ...fetchOptions } = options;
+  const { skipAuth = false, timeout = 15000, ...fetchOptions } = options;
 
   const headers = {
     'Content-Type': 'application/json',
@@ -38,11 +38,16 @@ export async function fetchClient(endpoint, options = {}) {
     }
   }
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...fetchOptions,
       headers,
+      signal: controller.signal,
     });
+    clearTimeout(timer);
 
     // No content
     if (response.status === 204) {
@@ -72,10 +77,11 @@ export async function fetchClient(endpoint, options = {}) {
       },
     };
   } catch (err) {
+    clearTimeout(timer);
     return {
       error: {
         status: 0,
-        detail: 'Network error. Please check your connection.',
+        detail: err.name === 'AbortError' ? 'Request timed out' : 'Network error. Please check your connection.',
         _raw: err.message,
       },
     };

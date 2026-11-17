@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import AcademicsPage from './pages/AcademicsPage';
 import SocietiesEventsPage from './pages/SocietiesEventsPage';
 import AdminPage from './pages/AdminPage';
+import NavigationPage from './pages/NavigationPage';
 
 // Simple wrapper to protect routes that require auth
 function ProtectedRoute({ children }) {
@@ -42,6 +43,9 @@ export default function App() {
         } />
         <Route path="/societies-events" element={
           <ProtectedRoute><SocietiesEventsPage /></ProtectedRoute>
+        } />
+        <Route path="/navigation" element={
+          <ProtectedRoute><NavigationPage /></ProtectedRoute>
         } />
         <Route path="/admin" element={
           <ProtectedRoute><AdminPage /></ProtectedRoute>

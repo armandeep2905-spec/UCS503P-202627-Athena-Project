@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
+
 export default function BuildingPopup({ building, onClose }) {
+  const navigate = useNavigate();
   if (!building) return null;
 
   return (
@@ -85,13 +88,13 @@ export default function BuildingPopup({ building, onClose }) {
         )}
       </div>
 
-      {/* Action Footer (Extensibility for routing later) */}
+      {/* Action Footer */}
       <div className="p-4 border-t border-border bg-surface-alt mt-auto">
         <button
-          disabled
-          className="w-full px-4 py-2 bg-surface text-muted border border-border rounded-theme-md text-sm font-medium cursor-not-allowed opacity-70"
+          onClick={() => navigate(`/navigation?to=${encodeURIComponent(building.name)}`)}
+          className="w-full px-4 py-2 bg-primary text-on-primary rounded-theme-md text-sm font-medium hover:bg-primary-hover transition-colors"
         >
-          Navigate Here (Coming Soon)
+          Navigate Here
         </button>
       </div>
     </div>

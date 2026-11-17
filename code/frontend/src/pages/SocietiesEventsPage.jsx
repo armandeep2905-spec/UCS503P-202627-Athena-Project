@@ -8,8 +8,20 @@ import { getSocieties } from '../api/societies';
 import { getEvents } from '../api/events';
 
 export default function SocietiesEventsPage() {
-  const { data: societies, loading: socLoading, error: socError } = useFetch(getSocieties);
-  const { data: events, loading: evtLoading, error: evtError } = useFetch(getEvents);
+  const { data: rawSocieties, loading: socLoading, error: socError } = useFetch(getSocieties);
+  const { data: rawEvents, loading: evtLoading, error: evtError } = useFetch(getEvents);
+
+  const events = Array.isArray(rawEvents)
+    ? rawEvents
+    : Array.isArray(rawEvents?.results)
+    ? rawEvents.results
+    : [];
+
+  const societies = Array.isArray(rawSocieties)
+    ? rawSocieties
+    : Array.isArray(rawSocieties?.results)
+    ? rawSocieties.results
+    : [];
 
   return (
     <PageShell showBack={true} title="Societies & Events">
