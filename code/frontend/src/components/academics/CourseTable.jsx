@@ -19,7 +19,6 @@ export default function CourseTable({ courses = [] }) {
   const [search, setSearch] = useState('');
   const [selectedSem, setSelectedSem] = useState('ALL');
 
-  // Normalize course list safely regardless of array vs paginated object
   const courseList = useMemo(() => {
     if (Array.isArray(courses)) return courses;
     if (courses && Array.isArray(courses.results)) return courses.results;
@@ -36,7 +35,6 @@ export default function CourseTable({ courses = [] }) {
       const sem = String(course.semester || course.faculty || '').toLowerCase();
 
       const matchesSearch = !q || code.includes(q) || name.includes(q) || sem.includes(q);
-
       const matchesSem =
         selectedSem === 'ALL' ||
         sem.includes(selectedSem.toLowerCase());
@@ -51,44 +49,44 @@ export default function CourseTable({ courses = [] }) {
 
   if (!courseList || courseList.length === 0) {
     return (
-      <Card className="text-center py-12">
-        <p className="text-sm text-muted">No courses found in database.</p>
+      <Card className="text-center py-10">
+        <p className="text-xs text-muted">No course records retrieved from database.</p>
       </Card>
     );
   }
 
   return (
     <div className="space-y-4">
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
+      {/* Search and Summary Counters */}
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         <div className="max-w-md w-full">
           <Input
-            placeholder="Search by course code, title, or semester (e.g. UCS301, Data Structures)..."
+            placeholder="Search code or title (e.g. UCS301, Data Structures)..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search courses"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-full bg-primary-light text-primary text-xs font-semibold border border-primary/20">
-            {filteredCourses.length} Subjects
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="px-2.5 py-1 rounded-theme-sm bg-surface-raised text-on-surface border border-border">
+            {filteredCourses.length} Courses
           </span>
-          <span className="px-3 py-1 rounded-full bg-surface-alt text-on-surface text-xs font-semibold border border-border">
-            {totalCredits.toFixed(1)} Total Credits
+          <span className="px-2.5 py-1 rounded-theme-sm bg-surface-alt text-secondary border border-border">
+            {totalCredits.toFixed(1)} Credits Total
           </span>
         </div>
       </div>
 
-      {/* Semester Filter Pills */}
-      <div className="flex flex-wrap gap-1.5 pb-2">
+      {/* Semester Segment Filters */}
+      <div className="flex flex-wrap gap-1.5 pb-1">
         {SEMESTERS.map((sem) => (
           <button
             key={sem.code}
             onClick={() => setSelectedSem(sem.code)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+            className={`px-2.5 py-1 rounded-theme-sm text-xs font-mono transition-colors duration-150 border ${
               selectedSem === sem.code
-                ? 'bg-primary text-on-primary border-primary shadow-sm'
-                : 'bg-surface border-border text-muted hover:text-on-surface hover:bg-surface-alt'
+                ? 'bg-primary text-on-primary border-primary shadow-theme-sm'
+                : 'bg-surface-raised border-border text-secondary hover:text-on-surface hover:bg-surface-alt'
             }`}
           >
             {sem.label}
@@ -96,60 +94,60 @@ export default function CourseTable({ courses = [] }) {
         ))}
       </div>
 
-      {/* Course Table */}
-      <Card padding={false} className="overflow-hidden">
+      {/* Course Registry Ledger Table */}
+      <Card padding={false} className="overflow-hidden border border-border">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-surface-alt border-b border-border text-on-surface">
+          <table className="w-full text-left text-xs min-w-[640px]">
+            <thead className="bg-surface-alt/70 border-b border-border text-secondary font-mono">
               <tr>
-                <th className="px-4 py-3 font-semibold">Course Code</th>
-                <th className="px-4 py-3 font-semibold">Course Title</th>
-                <th className="px-4 py-3 font-semibold">Semester / Track</th>
-                <th className="px-4 py-3 font-semibold text-center">Credits</th>
-                <th className="px-4 py-3 font-semibold text-center">Syllabus</th>
+                <th className="px-4 py-2.5 font-medium w-28">Code</th>
+                <th className="px-4 py-2.5 font-medium">Course Title</th>
+                <th className="px-4 py-2.5 font-medium w-36">Track / Sem</th>
+                <th className="px-4 py-2.5 font-medium text-center w-20">Credits</th>
+                <th className="px-4 py-2.5 font-medium text-right w-24">Syllabus</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border bg-surface-raised font-sans">
               {filteredCourses.map((course, idx) => {
                 const code = course.code || course.course_code || `COURSE-${idx}`;
                 const name = course.name || course.course_name || 'Untitled Course';
                 const sem = course.semester || course.faculty || 'Core';
                 const credits = course.credits != null ? Number(course.credits).toFixed(1) : '—';
-                const syllabus = course.syllabusLink || course.syllabus_link || 'https://www.thapar.edu/upload/files/BECSE_2024.pdf';
+                const syllabus =
+                  course.syllabusLink ||
+                  course.syllabus_link ||
+                  'https://www.thapar.edu/upload/files/BECSE_2024.pdf';
 
                 return (
-                  <tr key={course.id || idx} className="hover:bg-surface-alt/50 transition-colors">
-                    <td className="px-4 py-3 font-bold text-primary whitespace-nowrap">{code}</td>
-                    <td className="px-4 py-3 text-on-surface font-medium">{name}</td>
-                    <td className="px-4 py-3 text-muted text-xs whitespace-nowrap">
-                      <span className="inline-block px-2 py-0.5 rounded bg-surface-alt border border-border font-medium">
-                        {sem}
-                      </span>
+                  <tr key={`${code}-${idx}`} className="hover:bg-surface-alt/40 transition-colors">
+                    <td className="px-4 py-3 font-mono font-medium text-on-surface">
+                      {code}
                     </td>
-                    <td className="px-4 py-3 text-on-surface text-center font-semibold">{credits}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3 text-on-surface font-medium">
+                      {name}
+                    </td>
+                    <td className="px-4 py-3 text-secondary text-xs">
+                      {sem}
+                    </td>
+                    <td className="px-4 py-3 text-center font-mono font-medium text-on-surface">
+                      {credits}
+                    </td>
+                    <td className="px-4 py-3 text-right">
                       <a
                         href={syllabus}
                         target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-primary hover:underline text-xs font-medium"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-mono"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        PDF
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
-                        Scheme PDF
                       </a>
                     </td>
                   </tr>
                 );
               })}
-              {filteredCourses.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-muted">
-                    No subjects found matching your criteria.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>

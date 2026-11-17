@@ -23,35 +23,37 @@ export default function AddReminderModal({ isOpen, onClose, onAdd }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add New Reminder">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create Academic Reminder">
+      <form onSubmit={handleSubmit} className="space-y-3.5">
         <Input
           label="Title"
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="E.g., Submit Assignment"
+          placeholder="e.g. UCS301 Lab Evaluation"
         />
         <Input
-          label="Date"
+          label="Due Date"
           type="date"
           required
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
         <div>
-          <label className="block text-sm font-medium text-on-surface mb-1.5">Note (Optional)</label>
+          <label className="block text-xs font-medium text-secondary mb-1.5">Details (Optional)</label>
           <textarea
-            className="w-full px-3.5 py-2.5 rounded-theme-md border border-border bg-surface text-on-surface placeholder:text-muted text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 rounded-theme-md border border-border bg-surface-raised text-on-surface placeholder:text-muted text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-xs"
             rows={3}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Add some details..."
+            placeholder="Room number, reference syllabus chapter, submission portal..."
           />
         </div>
-        <div className="flex justify-end gap-3 pt-4 border-t border-border mt-6">
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button type="submit" loading={loading} disabled={!title.trim() || !date}>
+        <div className="flex justify-end gap-2 pt-3 border-t border-border mt-4">
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" size="sm" loading={loading} disabled={!title.trim() || !date}>
             Save Reminder
           </Button>
         </div>

@@ -1,14 +1,14 @@
 export default function TypingIndicator() {
   return (
     <div className="flex justify-start">
-      <div className="bg-surface-alt border border-border rounded-theme-lg rounded-bl-sm px-4 py-3 flex items-center gap-1.5">
+      <div className="bg-surface-raised border border-border rounded-theme-md px-3.5 py-2.5 flex items-center gap-1.5 shadow-theme-sm">
+        <span className="text-[10px] font-mono text-muted mr-1">Searching directory</span>
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="w-2 h-2 bg-muted rounded-full"
+            className="w-1.5 h-1.5 bg-secondary/60 rounded-full animate-pulse"
             style={{
-              animation: 'pulse-dot 1.2s infinite',
-              animationDelay: `${i * 0.2}s`,
+              animationDelay: `${i * 0.18}s`,
             }}
           />
         ))}

@@ -5,27 +5,25 @@ export default function CourseAutocomplete({
   value = '',
   onChange,
   onSelectCourse,
-  placeholder = 'Search code or name (e.g. UCS301, Data Structures)...',
-  id
+  placeholder = 'Search code or title (e.g. UCS301, Data Structures)...',
+  id,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef(null);
   const listRef = useRef(null);
 
-  // Filter courses based on user query matching subject code or subject name
   const filteredCourses = (() => {
     const trimmed = (value || '').trim().toLowerCase();
     if (!trimmed) return [];
 
-    return THAPAR_CSE_COURSES.filter(course => {
+    return THAPAR_CSE_COURSES.filter((course) => {
       const codeMatch = course.code.toLowerCase().includes(trimmed);
       const nameMatch = course.name.toLowerCase().includes(trimmed);
       return codeMatch || nameMatch;
-    }).slice(0, 10); // limit to top 10 matches for clean dropdown
+    }).slice(0, 10);
   })();
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -43,7 +41,6 @@ export default function CourseAutocomplete({
   };
 
   const handleSelect = (course) => {
-    // Fill course name/code display
     const displayName = `${course.code} — ${course.name}`;
     onChange(displayName);
     if (onSelectCourse) {
@@ -79,7 +76,6 @@ export default function CourseAutocomplete({
     }
   };
 
-  // Scroll active item into view
   useEffect(() => {
     if (highlightedIndex >= 0 && listRef.current) {
       const activeEl = listRef.current.children[highlightedIndex];
@@ -91,14 +87,14 @@ export default function CourseAutocomplete({
 
   return (
     <div className="relative w-full" ref={containerRef}>
-      <label htmlFor={id} className="block text-sm font-medium text-on-surface mb-1.5">
-        Course Code / Name
+      <label htmlFor={id} className="block text-xs font-medium text-secondary mb-1.5">
+        Subject Title or Code
       </label>
       <input
         id={id}
         type="text"
         autoComplete="off"
-        className="w-full px-3.5 py-2.5 rounded-theme-md border border-border bg-surface text-on-surface placeholder:text-muted text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+        className="w-full h-9 px-3 py-2 rounded-theme-md border border-border bg-surface-raised text-on-surface placeholder:text-muted text-sm transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}
@@ -111,7 +107,7 @@ export default function CourseAutocomplete({
       {isOpen && filteredCourses.length > 0 && (
         <ul
           ref={listRef}
-          className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-theme-md bg-surface border border-border shadow-xl py-1 text-sm"
+          className="absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-theme-md bg-surface-raised border border-border shadow-theme-lg py-1 text-xs font-sans"
         >
           {filteredCourses.map((course, idx) => {
             const isSelected = idx === highlightedIndex;
@@ -119,22 +115,22 @@ export default function CourseAutocomplete({
               <li
                 key={`${course.code}-${idx}`}
                 onMouseDown={(e) => {
-                  e.preventDefault(); // prevent blur before selection
+                  e.preventDefault();
                   handleSelect(course);
                 }}
                 onMouseEnter={() => setHighlightedIndex(idx)}
                 className={`px-3 py-2 cursor-pointer flex items-center justify-between transition-colors ${
-                  isSelected ? 'bg-primary/10 text-primary' : 'text-on-surface hover:bg-surface-elevated'
+                  isSelected ? 'bg-surface-alt text-on-surface font-medium' : 'text-on-surface hover:bg-surface-alt/60'
                 }`}
               >
                 <div className="flex flex-col text-left overflow-hidden pr-2">
-                  <div className="font-medium truncate">
-                    <span className="font-semibold text-primary mr-1.5">{course.code}</span>
-                    <span>— {course.name}</span>
+                  <div className="truncate">
+                    <span className="font-mono font-semibold text-primary mr-1.5">{course.code}</span>
+                    <span>{course.name}</span>
                   </div>
-                  <span className="text-xs text-muted truncate">{course.semester}</span>
+                  <span className="text-[10px] font-mono text-muted truncate">{course.semester}</span>
                 </div>
-                <div className="shrink-0 text-xs font-semibold px-2 py-0.5 rounded bg-surface-elevated border border-border text-primary">
+                <div className="shrink-0 font-mono text-[11px] px-1.5 py-0.5 rounded-theme-sm bg-surface-alt border border-border text-secondary">
                   {course.credits} Cr
                 </div>
               </li>

@@ -18,27 +18,29 @@ export default function AcademicsPage() {
   const { data: faculty, loading: facultyLoading, error: facultyError } = useFetch(getFaculty);
 
   const tabs = [
-    { id: 'courses', label: 'Courses & Syllabi' },
+    { id: 'courses', label: 'Curriculum & Syllabi' },
     { id: 'faculty', label: 'Faculty Directory' },
-    { id: 'timetable', label: 'Timetable' },
-    { id: 'datesheet', label: 'Date Sheet' },
+    { id: 'timetable', label: 'Semester Timetable' },
+    { id: 'datesheet', label: 'Examination Schedule' },
     { id: 'cgpa', label: 'CGPA Calculator' },
   ];
 
   return (
-    <PageShell showBack={true} title="Academics">
-      <div className="animate-fade-in pb-12">
-        {/* Tab Navigation */}
-        <div className="flex overflow-x-auto border-b border-border mb-6 hide-scrollbar">
+    <PageShell showBack={true} title="Academic Registry">
+      <div className="animate-fade-in pb-10 space-y-6">
+        {/* Tab Navigation Bar */}
+        <div className="flex overflow-x-auto border-b border-border hide-scrollbar gap-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`
-                whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 transition-colors
-                ${activeTab === tab.id
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-muted hover:text-on-surface hover:border-border'}
+                whitespace-nowrap py-2.5 px-3.5 text-xs font-mono transition-colors border-b-2
+                ${
+                  activeTab === tab.id
+                    ? 'border-primary text-primary font-semibold'
+                    : 'border-transparent text-secondary hover:text-on-surface hover:border-border'
+                }
               `}
             >
               {tab.label}
@@ -46,31 +48,37 @@ export default function AcademicsPage() {
           ))}
         </div>
 
-        {/* Tab Content */}
-        <div className="min-h-[400px]">
+        {/* Tab Content Canvas */}
+        <div className="min-h-[420px]">
           {activeTab === 'courses' && (
             <div>
-              {coursesLoading ? <Loader /> : coursesError ? <ErrorState /> : <CourseTable courses={courses} />}
+              {coursesLoading ? (
+                <Loader />
+              ) : coursesError ? (
+                <ErrorState />
+              ) : (
+                <CourseTable courses={courses} />
+              )}
             </div>
           )}
 
           {activeTab === 'faculty' && (
             <div>
-              {facultyLoading ? <Loader /> : facultyError ? <ErrorState /> : <FacultyDirectory facultyList={faculty} />}
+              {facultyLoading ? (
+                <Loader />
+              ) : facultyError ? (
+                <ErrorState />
+              ) : (
+                <FacultyDirectory facultyList={faculty} />
+              )}
             </div>
           )}
 
-          {activeTab === 'timetable' && (
-            <TimetableView />
-          )}
+          {activeTab === 'timetable' && <TimetableView />}
 
-          {activeTab === 'datesheet' && (
-            <DateSheetView />
-          )}
+          {activeTab === 'datesheet' && <DateSheetView />}
 
-          {activeTab === 'cgpa' && (
-            <CGPACalculator />
-          )}
+          {activeTab === 'cgpa' && <CGPACalculator />}
         </div>
       </div>
     </PageShell>

@@ -9,7 +9,7 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
     {
       id: 'welcome',
       role: 'assistant',
-      text: "Hello! I'm Athena, your campus assistant. Ask me anything about your college — academics, facilities, events, or campus navigation.",
+      text: "Athena is active. You can inquire about official faculty emails, semester course syllabi, attendance requirements, CGPA regulations, or campus buildings.",
       sources: [],
       locationId: null,
     },
@@ -25,14 +25,15 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Prevent body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const handleSend = async (text) => {
@@ -47,7 +48,7 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
     try {
       const res = await sendQuery(text);
       const data = res?.data || {};
-      const answer = data?.answer || (typeof data === 'string' ? data : 'I could not find an answer.');
+      const answer = data?.answer || (typeof data === 'string' ? data : 'No response available.');
       const assistantMsg = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
@@ -63,7 +64,7 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
         {
           id: `error-${Date.now()}`,
           role: 'assistant',
-          text: 'Sorry, I encountered an error. Please try again.',
+          text: 'Unable to reach the campus intelligence service. Please verify your connection.',
           sources: [],
           locationId: null,
         },
@@ -76,39 +77,44 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-end p-0 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-end p-0 sm:p-5">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm sm:bg-transparent"
+        className="absolute inset-0 bg-black/25 backdrop-blur-[1px] sm:bg-black/15"
         onClick={onClose}
+        aria-hidden="true"
       />
 
-      {/* Chat panel */}
-      <div className="relative w-full sm:w-96 h-full sm:h-[600px] sm:max-h-[80vh] bg-surface-raised border border-border sm:rounded-theme-xl shadow-theme-xl flex flex-col animate-slide-up">
+      {/* Slide-over Assistant Drawer */}
+      <div className="relative w-full sm:w-[420px] h-[85vh] sm:h-[620px] bg-surface-raised border border-border sm:rounded-theme-lg shadow-theme-xl flex flex-col animate-slide-up overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-alt sm:rounded-t-theme-xl">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-alt/70">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-on-primary text-xs font-bold">A</span>
+            <div className="w-6 h-6 rounded-theme-sm bg-primary text-on-primary flex items-center justify-center text-xs font-semibold">
+              A
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-on-surface">Athena</h3>
-              <p className="text-xs text-muted">Campus Assistant</p>
+              <h3 className="text-xs font-semibold text-on-surface leading-tight">
+                Athena Assistant
+              </h3>
+              <p className="text-[10px] font-mono text-muted leading-tight">
+                Grounded on TIET Academic Knowledge
+              </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-theme-sm text-muted hover:text-on-surface hover:bg-surface transition-colors"
-            aria-label="Close chat"
+            className="p-1 rounded-theme-sm text-secondary hover:text-on-surface hover:bg-surface transition-colors"
+            aria-label="Close assistant"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        {/* Message Stream */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3.5 bg-surface/30">
           {messages.map((msg) => (
             <MessageBubble
               key={msg.id}
@@ -120,7 +126,7 @@ export default function ChatPanel({ isOpen, onClose, onViewOnMap }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Prompt Input */}
         <ChatInput onSend={handleSend} disabled={isTyping} />
       </div>
     </div>
