@@ -35,7 +35,8 @@ export default function InstitutionSelectPage() {
     setVerifyLoading(true);
     setVerifyError('');
 
-    const res = await verifyEmail(email, selectedInst.domain);
+    const targetDomain = selectedInst.domain || selectedInst.email_domain || 'thapar.edu';
+    const res = await verifyEmail(email, targetDomain);
 
     if (res.error) {
       setVerifyError(res.error.detail || 'Verification failed.');
@@ -43,7 +44,6 @@ export default function InstitutionSelectPage() {
     } else {
       selectInstitution(selectedInst);
       markVerified();
-      // We don't save the email here, just navigate to register where they fill out the full form
       navigate('/register', { state: { prefilledEmail: email } });
     }
   };
@@ -84,7 +84,7 @@ export default function InstitutionSelectPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-on-surface line-clamp-1">{inst.name}</h3>
-                      <p className="text-xs text-muted">@{inst.domain}</p>
+                      <p className="text-xs text-muted">@{inst.domain || inst.email_domain || 'thapar.edu'}</p>
                     </div>
                   </Card>
                 ))}
@@ -120,7 +120,7 @@ export default function InstitutionSelectPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={`student@${selectedInst.domain}`}
+                placeholder={`student@${selectedInst.domain || selectedInst.email_domain || 'thapar.edu'}`}
                 error={verifyError}
               />
               <Button type="submit" className="w-full" loading={verifyLoading}>

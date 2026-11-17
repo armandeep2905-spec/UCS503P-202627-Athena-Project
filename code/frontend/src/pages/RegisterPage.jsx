@@ -32,6 +32,14 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const targetDomain = (selectedInstitution.domain || selectedInstitution.email_domain || 'thapar.edu').toLowerCase();
+    const emailDomain = email.split('@')[1]?.toLowerCase();
+    if (emailDomain !== targetDomain) {
+      setError(`Only emails with the @${targetDomain} domain can be registered.`);
+      return;
+    }
+
     setLoading(true);
 
     const res = await register({
