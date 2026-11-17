@@ -28,8 +28,8 @@ SELECT institution_id
 FROM institutions
 WHERE name = %s AND email_domain = %s
 """, (
-    "Demo College",
-    "democollege.edu"
+    "Thapar Institute of Engineering & Technology",
+    "thapar.edu"
 ))
 
 institution = cursor.fetchone()
@@ -42,9 +42,9 @@ else:
     VALUES (%s, %s, %s)
     RETURNING institution_id
     """, (
-        "Demo College",
-        "democollege.edu",
-        "Punjab, India"
+        "Thapar Institute of Engineering & Technology",
+        "thapar.edu",
+        "Patiala, Punjab, India"
     ))
 
     institution_id = cursor.fetchone()[0]

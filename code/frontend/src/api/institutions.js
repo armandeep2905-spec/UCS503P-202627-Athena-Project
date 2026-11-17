@@ -1,18 +1,30 @@
 /**
- * Institutions API — mock.
+ * Institutions API — Live DRF endpoint with Thapar fallback.
  */
-import data from '../mocks/institutions.json';
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+import { fetchClient } from './client';
+import fallbackData from '../mocks/institutions.json';
 
 export async function getInstitutions() {
-  await delay(400);
-  return { data };
+  try {
+    const { data, error } = await fetchClient('/api/institutions/');
+    if (data) {
+      return { data };
+    }
+    if (error) {
+      console.warn('Backend institutions endpoint error, using fallback:', error);
+    }
+  } catch (err) {
+    console.warn('Backend institutions unreachable, using fallback:', err);
+  }
+  return { data: fallbackData };
 }
 
 export async function getInstitution(id) {
-  await delay(300);
-  const institution = data.results.find((i) => i.id === id);
+  try {
+    const { data } = await fetchClient(`/api/institutions/${id}/`);
+    if (data) return { data };
+  } catch {}
+  const institution = fallbackData.results.find((i) => i.id === Number(id));
   if (institution) return { data: institution };
   return { error: { status: 404, detail: 'Institution not found.' } };
 }

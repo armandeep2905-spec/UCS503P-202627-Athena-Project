@@ -1,11 +1,21 @@
 /**
- * Events API — mock.
+ * Events API — Live DRF endpoint connected to PostgreSQL with fallback.
  */
-import data from '../mocks/events.json';
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+import { fetchClient } from './client';
+import fallbackData from '../mocks/events.json';
 
 export async function getEvents() {
-  await delay(400);
-  return { data };
+  try {
+    const { data, error } = await fetchClient('/api/events/');
+    if (data && (Array.isArray(data) || Array.isArray(data.results))) {
+      return { data };
+    }
+    if (error) {
+      console.warn('Backend events fetch error, using fallback:', error);
+    }
+  } catch (err) {
+    console.warn('Backend events endpoint unreachable, using fallback:', err);
+  }
+  return { data: fallbackData };
 }
+

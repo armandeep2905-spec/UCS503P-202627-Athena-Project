@@ -27,7 +27,7 @@ def env_list(key, default=""):
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-CHANGE-ME-IN-PRODUCTION")
 DEBUG = env_bool("DEBUG", default=False)
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default="localhost,127.0.0.1")
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default="localhost,127.0.0.1,testserver")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -142,3 +142,5 @@ REST_FRAMEWORK = {
 # "https://athena-something.vercel.app,https://athena.yourdomain.com"
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_CREDENTIALS = True
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True

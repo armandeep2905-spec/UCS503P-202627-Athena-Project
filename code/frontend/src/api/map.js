@@ -1,12 +1,29 @@
 /**
- * Map / Locations API — mock.
+ * Map / Locations API — Live DRF endpoint connected to PostgreSQL with fallback.
  */
+import { fetchClient } from './client';
 import data from '../mocks/buildings.json';
 
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
-
 export async function getLocations() {
-  await delay(400);
+  try {
+    const { data: resData, error } = await fetchClient('/api/map/locations/');
+    if (resData && (Array.isArray(resData) || Array.isArray(resData.results))) {
+      const results = Array.isArray(resData) ? resData : resData.results;
+      return {
+        data: {
+          count: results.length,
+          next: null,
+          previous: null,
+          results,
+        },
+      };
+    }
+    if (error) {
+      console.warn('Backend map locations fetch error, using fallback:', error);
+    }
+  } catch (err) {
+    console.warn('Backend map locations endpoint unreachable, using fallback:', err);
+  }
   return {
     data: {
       count: data.results.length,
@@ -18,8 +35,16 @@ export async function getLocations() {
 }
 
 export async function getLocation(id) {
-  await delay(300);
+  try {
+    const { data: resData, error } = await fetchClient(`/api/map/locations/${id}/`);
+    if (resData && !error) {
+      return { data: resData };
+    }
+  } catch (err) {
+    console.warn('Backend map location detail unreachable, using fallback:', err);
+  }
   const building = data.results.find((b) => b.id === id);
   if (building) return { data: building };
   return { error: { status: 404, detail: 'Building not found.' } };
 }
+

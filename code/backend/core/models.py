@@ -12,22 +12,11 @@ class Institution(models.Model):
 
 
 class Student(models.Model):
-    student_id = models.BigIntegerField(primary_key=True)
-    institution = models.ForeignKey(
-        Institution,
-        on_delete=models.DO_NOTHING,
-        related_name="students",
-        db_column="institution_id"
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="students")
     name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    branch = models.CharField(max_length=255, blank=True, null=True)
     roll_number = models.CharField(max_length=50, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = "students"
-        managed = False
 
     def __str__(self):
         return self.name
@@ -54,9 +43,24 @@ class Course(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="courses")
     course_code = models.CharField(max_length=50)
     course_name = models.CharField(max_length=255)
+    credits = models.FloatField(blank=True, null=True)
+    semester = models.CharField(max_length=100, blank=True, null=True)
+    syllabus_link = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return f"{self.course_code} — {self.course_name}"
+
+
+class Faculty(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="faculty_members")
+    name = models.CharField(max_length=255)
+    designation = models.CharField(max_length=255, blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    contact = models.CharField(max_length=255, blank=True, null=True)
+    office = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.department.department_name})"
 
 
 class Building(models.Model):

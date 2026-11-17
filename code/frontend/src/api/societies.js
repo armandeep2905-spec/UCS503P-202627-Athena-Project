@@ -1,11 +1,21 @@
 /**
- * Societies API — mock.
+ * Societies API — Live DRF endpoint connected to PostgreSQL with fallback.
  */
-import data from '../mocks/societies.json';
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+import { fetchClient } from './client';
+import fallbackData from '../mocks/societies.json';
 
 export async function getSocieties() {
-  await delay(400);
-  return { data };
+  try {
+    const { data, error } = await fetchClient('/api/societies/');
+    if (data && (Array.isArray(data) || Array.isArray(data.results))) {
+      return { data };
+    }
+    if (error) {
+      console.warn('Backend societies fetch error, using fallback:', error);
+    }
+  } catch (err) {
+    console.warn('Backend societies endpoint unreachable, using fallback:', err);
+  }
+  return { data: fallbackData };
 }
+
