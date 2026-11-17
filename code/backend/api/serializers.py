@@ -142,15 +142,37 @@ class FacultySerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    # Aliases so the frontend can seamlessly read title, date, venue
+    title = serializers.CharField(source="event_name", read_only=True)
+    date = serializers.CharField(source="event_date", read_only=True)
+    venue = serializers.CharField(source="location", read_only=True)
+    description = serializers.SerializerMethodField()
+
     class Meta:
         model = Event
-        fields = ["id", "event_name", "event_date", "location", "institution"]
+        fields = [
+            "id", "event_name", "event_date", "location", "institution",
+            "title", "date", "venue", "description",
+        ]
+
+    def get_description(self, obj):
+        return f"Campus event at {obj.location or 'Auditorium'}."
 
 
 class SocietySerializer(serializers.ModelSerializer):
+    # Aliases so the frontend can seamlessly read name and events
+    name = serializers.CharField(source="society_name", read_only=True)
+    events = serializers.SerializerMethodField()
+
     class Meta:
         model = Society
-        fields = ["id", "society_name", "description", "faculty_coordinator", "institution"]
+        fields = [
+            "id", "society_name", "description", "faculty_coordinator", "institution",
+            "name", "events",
+        ]
+
+    def get_events(self, obj):
+        return []
 
 
 class RoomSerializer(serializers.ModelSerializer):

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athena - Thapar Campus Navigation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="logo">🧭</span>
+            <div>
+                <h1>Athena</h1>
+                <p>Thapar Campus Navigation</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="navigation-panel">
+        <div class="field">
+            <label for="startLocation"><span class="badge a">A</span> From</label>
+            <select id="startLocation"></select>
+        </div>
+
+        <button id="swapBtn" class="icon-btn" title="Swap start and destination">⇄</button>
+
+        <div class="field">
+            <label for="endLocation"><span class="badge b">B</span> To</label>
+            <select id="endLocation"></select>
+        </div>
+
+        <div class="field">
+            <label>Travel by</label>
+            <div class="seg" id="modeSwitch">
+                <button type="button" data-mode="walk" class="on">Walk</button>
+                <button type="button" data-mode="vehicle">Vehicle</button>
+            </div>
+        </div>
+
+        <button id="findBtn" class="primary">🧭 Find Route</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+    </section>
+
+    <main class="layout">
+
+        <section class="map-card">
+            <div class="map-toolbar">
+                <div class="zoom">
+                    <button id="zoomOut" title="Zoom out">−</button>
+                    <span id="zoomLabel">100%</span>
+                    <button id="zoomIn" title="Zoom in">+</button>
+                    <button id="zoomFit" class="fit">Fit</button>
+                </div>
+                <div class="toggles">
+                    <label><input type="checkbox" id="toggleMarkers" checked> Show places</label>
+                    <label><input type="checkbox" id="toggleNames" checked> Show names</label>
+                    <label><input type="checkbox" id="toggleRoads"> Show road network</label>
+                </div>
+            </div>
+
+            <div id="mapScroll">
+                <div id="mapContainer">
+                    <img id="campusMap" src="campus-map-opt.jpg" alt="Thapar Campus Map">
+                    <svg id="routeSvg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+                </div>
+            </div>
+
+            <div id="imageError" class="image-error">
+                ⚠️ Couldn't load <b>campus-map-opt.jpg</b>. Put the image in the same folder as this
+                file and make sure it is named exactly <b>campus-map-opt.jpg</b>.
+            </div>
+
+            <div class="legend" id="legend">
+                <span><i style="background:#7c3aed"></i>Gates</span>
+                <span><i style="background:#2563eb"></i>Academic</span>
+                <span><i style="background:#db2777"></i>Hostels</span>
+                <span><i style="background:#ea580c"></i>Food &amp; services</span>
+                <span><i style="background:#16a34a"></i>Sports</span>
+                <span><i style="background:#0891b2"></i>Other</span>
+                <span class="sep">|</span>
+                <span><i class="ln"></i>Walking route</span>
+                <span><i class="ln veh"></i>Vehicle route</span>
+                <span><i class="ln dot"></i>Walk to / from the road</span>
+                <span><i class="pbox">P</i>Park here</span>
+            </div>
+        </section>
+
+        <aside id="routeInformation" class="info-card">
+            <h2>📍 Route Information</h2>
+            <p id="routeText">Select a starting point and destination, or click two places on the map.</p>
+            <div id="routeResult"></div>
+        </aside>
+
+    </main>
+
+    <div id="tooltip"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
