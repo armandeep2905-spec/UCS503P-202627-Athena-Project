@@ -7,6 +7,7 @@ nothing sensitive is hardcoded here.
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -100,6 +101,13 @@ else:
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
+    }
+
+# Use local SQLite for tests so running `manage.py test` is fast and does not require remote DB access
+if "test" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "test_db.sqlite3",
     }
 
 AUTH_PASSWORD_VALIDATORS = [
