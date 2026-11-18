@@ -1,169 +1,176 @@
-<p align="center">
-  <img src="assets/logo.png" alt="Athena logo" width="220" height="220">
-</p>
 
-<h1 align="center">Athena: AI-Powered Campus Companion</h1>
+# Athena — AI-Powered Campus Assistant
 
-<p align="center"><em>Ask. Discover. Navigate.</em></p>
+Athena is a web-based campus assistant designed to help students access institutional information and navigate their campus through a single platform. It brings together academic information, faculty details, student societies, campus events, reminders, and interactive campus navigation.
 
-Athena is a campus assistance platform built as a course project for **UCS503P (Software Engineering)** at Thapar Institute of Engineering and Technology. Students ask questions in natural language and get answers drawn from institution-provided documents, rather than from a general-purpose chatbot's memory.
+The project includes a React-based frontend, a Django REST Framework backend, PostgreSQL database integration, and a 2D campus navigation module.
 
-## Problem
+## Key Features
 
-Campus information is scattered across websites, handbooks, circulars, department pages and notice boards. Students, especially new ones, lose time finding the right source for academic rules, society and event details, or the location of a building or lab.
+### 1. User Authentication
+- Student registration and login.
+- Institutional email validation.
+- Restriction of registration to approved institutional email domains.
+- Token-based authentication.
+- Protected application pages for authenticated users.
 
-## Features
+### 2. Academic Information
+- Course and subject information.
+- Course codes, credits, semesters, and syllabus links.
+- CGPA calculator interface.
 
-### AI Campus Assistant
-- **Natural-language Q&A:** students ask questions the way they would ask a senior, instead of digging through PDFs and notice boards.
-- **Retrieval-Augmented Generation (RAG):** the bot retrieves relevant passages from college-provided documents first, then generates the answer from them, so responses stay grounded in the institution's own information.
-- **Semantic search:** documents are embedded and searched by meaning, so a question still finds the right passage when it doesn't share exact keywords with the source.
-- **Institution-aware answers:** the student selects their institution, and answers come only from that institution's data, never mixed with another college's.
-- **Always one tap away:** the query bot is a floating button available from every page.
+### 3. Faculty Directory
+- Search faculty members by name or department.
+- View faculty details such as designation, email, and cabin location.
+- Department-based faculty lookup.
 
-### Accounts and Personalization
-- **Registration and login:** token-based authentication connected to the backend.
-- **Guided entry flow:** landing page, institution selection, login/register, then a personalized dashboard.
-- **Dashboard hub:** a single home screen with tiles linking to every section of the app.
+### 4. Societies and Events
+- Browse student societies.
+- View society descriptions and coordinator information.
+- Access campus event information.
 
-### Academics
-- **Courses:** browse course information for your institution.
-- **Faculty directory:** find faculty and their departments.
-- **Academic reminders:** keep track of deadlines and important dates.
+### 5. Campus Navigation
+- Interactive 2D campus map.
+- Select starting and destination locations.
+- Calculate routes through the connected campus road network.
+- Display calculated routes visually.
+- Support destination deep-linking through URL parameters.
+- Integration of the navigation module into the main Athena frontend.
 
-### Societies and Events
-- **Societies:** discover the clubs and societies on campus.
-- **Events:** see what is happening on campus and stay updated.
+### 6. Reminders
+- Create and manage student reminders.
+- Store reminder details against the authenticated student account.
 
-### Interactive Campus Map
-- **Clickable buildings:** tap a building to open a popup with its information.
-- **Data-driven design:** the map is built from structured location data, so navigation features can be added without redesigning it.
-- **Always one tap away:** like the query bot, the map is a floating button available from every page.
+### 7. Campus Information Assistant
+- Process student queries related to institutional information.
+- Retrieve relevant information from the available institutional knowledge base.
+- Search faculty and course information.
+- Retrieve relevant document content using full-text search.
 
-### Multi-College Architecture
-- **Many institutions, one platform:** each institution has its own verified knowledge base, courses, events and locations.
-- **College-controlled data:** the information students see comes from institution-provided sources, which keeps answers trustworthy.
+## Technology Stack
 
-## How the RAG Pipeline Works
-
-```
-Student question
-      |
-      v
-Embed query (Sentence Transformers)
-      |
-      v
-Vector search in PostgreSQL + pgvector  <-- institution-specific documents
-      |
-      v
-Top matching passages + question -> LLM (GPT-4o-mini)
-      |
-      v
-Grounded answer returned to the student
-```
-
-## Tech Stack
-
-| Layer | Technology |
+| Component | Technologies |
 |---|---|
-| Frontend | React, Vite, TypeScript, Tailwind CSS |
-| Backend | Django, Django REST Framework (token authentication) |
-| Database | PostgreSQL with pgvector |
-| Embeddings | Sentence Transformers |
-| LLM | GPT-4o-mini |
+| Frontend | React.js, Vite, JavaScript |
+| Styling | Tailwind CSS, CSS |
+| Frontend Routing | React Router |
+| Backend | Python, Django |
+| API Development | Django REST Framework |
+| Database | PostgreSQL |
+| Database Hosting | Neon PostgreSQL |
+| Authentication | Django Authentication, Token Authentication |
+| Knowledge Retrieval | Python, SQLite FTS5 |
+| Campus Navigation | HTML, CSS, JavaScript, SVG/2D Map |
+| Version Control | Git and GitHub |
 
 ## Project Structure
 
-```
-.
+```text
+Athena/
+│
+├── DataBase/
+│   ├── create_database.py
+│   ├── insert_data.py
+│   ├── load_all_data.py
+│   └── setup_neon.py
+│
+├── assets/
+│
 ├── code/
-│   ├── backend/      # Django / DRF API and RAG pipeline
-│   └── frontend/     # React + Vite app
-├── DataBase/         # Schema creation and data insertion scripts
-├── assets/           # Static assets and 3D models
-├── docs/             # Requirements, design and testing documents
-├── journals/         # Weekly team journals
+│   ├── backend/
+│   │   ├── api/
+│   │   │   ├── admin.py
+│   │   │   ├── serializers.py
+│   │   │   ├── tests.py
+│   │   │   ├── urls.py
+│   │   │   └── views.py
+│   │   │
+│   │   ├── config/
+│   │   │   ├── settings.py
+│   │   │   ├── urls.py
+│   │   │   ├── asgi.py
+│   │   │   └── wsgi.py
+│   │   │
+│   │   ├── core/
+│   │   │   ├── models.py
+│   │   │   ├── views.py
+│   │   │   ├── rag_service.py
+│   │   │   ├── tests.py
+│   │   │   └── migrations/
+│   │   │
+│   │   ├── manage.py
+│   │   └── requirements.txt
+│   │
+│   └── frontend/
+│       ├── public/
+│       │   └── campus-nav/
+│       │       ├── map.html
+│       │       ├── script.js
+│       │       ├── style.css
+│       │       └── campus-map-opt.jpg
+│       │
+│       ├── src/
+│       │   ├── api/
+│       │   ├── components/
+│       │   ├── context/
+│       │   ├── data/
+│       │   ├── hooks/
+│       │   ├── mocks/
+│       │   ├── pages/
+│       │   ├── App.jsx
+│       │   └── main.jsx
+│       │
+│       ├── package.json
+│       ├── vite.config.js
+│       └── tailwind.config.js
+│
+├── docs/
+├── journals/
 ├── project-proposal/
+├── project-report-final/
 ├── project-report-prototype-stage/
-└── project-report-final/
+└── README.md
 ```
 
-## Getting Started
+## Application Modules
 
-### Prerequisites
-
-- Node.js 18+
-- Python 3.10+
-- PostgreSQL with the `pgvector` extension
-
-### 1. Clone
-
-```bash
-git clone https://github.com/armandeep2905-spec/UCS503P-202627-Athena-Project.git
-cd UCS503P-202627-Athena-Project
-```
-
-### 2. Database
-
-Create a PostgreSQL database, enable pgvector (`CREATE EXTENSION vector;`), then run the scripts in `DataBase/` to create the schema and insert sample data.
-
-### 3. Backend
-
-```bash
-cd code/backend
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env            # then fill in the values below
-python manage.py migrate
-python manage.py runserver
-```
-
-Environment variables:
-
-| Variable | Purpose |
+| Module | Responsibility |
 |---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `DJANGO_SECRET_KEY` | Django secret key |
-| `OPENAI_API_KEY` | Key used for answer generation |
-| `CORS_ALLOWED_ORIGINS` | Frontend origin(s) allowed to call the API |
+| Authentication | Student registration, login, and access control |
+| Academics | Course information and academic utilities |
+| Faculty | Faculty directory and search |
+| Societies and Events | Campus societies and event information |
+| Navigation | 2D campus map and route calculation |
+| Reminders | Student reminder management |
+| Knowledge Retrieval | Retrieval of relevant institutional information |
+| Database | Storage and retrieval of application data |
 
-### 4. Frontend
+## Testing and Validation
 
-```bash
-cd code/frontend
-npm install
-npm run dev
-```
+Testing was performed to verify important application workflows, including authentication, faculty information retrieval, societies loading, campus navigation, deep-link handling, and database connection behaviour.
 
-Create `code/frontend/.env`:
+The recorded test cases cover:
 
-```
-VITE_API_URL=http://localhost:8000
-```
+- Institutional registration and email-domain validation.
+- Duplicate account prevention.
+- Faculty directory information retrieval.
+- Society catalog loading.
+- Campus route calculation.
+- Navigation deep-link functionality.
+- Database cold-start and request timeout handling.
 
-## Current Status
 
-- Frontend pages and flow: landing, institution selection, login/register, dashboard.
-- Authentication is connected to the backend (`/api/auth/login`, `/api/auth/register`).
-- Other resources (courses, events, societies, reminders, map data) are being moved from local mock data to real API endpoints.
+## Future Scope
 
-## Roadmap
+- Extend campus navigation with additional campus locations and improved route information.
+- Develop a 3D campus navigation experience.
+- Improve the institutional knowledge base and query retrieval.
+- Expand academic and administrative information coverage.
+- Improve testing automation and application performance.
+- Add further campus services based on student requirements.
 
-- 3D campus navigation (Three.js)
-- Turn-by-turn indoor navigation
-- Student affiliation verification against college records
-- Mobile app, voice input, multilingual support
-- Notifications and personalized academic reminders
 
-## Team
 
-Built by **The 3 Stooges**:
+## Repository
 
-- Armandeep Singh Taggar
-- Nipun Gupta
-- Sanchit Narula
-
-## License
-
-Developed for academic purposes as part of UCS503P at TIET, Patiala.
+[**Athena — GitHub Repository**](https://github.com/nipun1015/UCS503P-202627-Athena-Project)
