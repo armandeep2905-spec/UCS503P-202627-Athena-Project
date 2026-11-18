@@ -17,3 +17,4 @@ Roll No. 1024031169
 
 - [W7 : Campus Road Connectivity and Route Accuracy Improvements](https://github.com/nipun1015/UCS503P-202627-Athena-Project/blob/master/journals/1024031169-nipun/w7-athena.md)
   
+- [W8 : Integration of Campus Navigation with Frontend and Backend](https://github.com/nipun1015/UCS503P-202627-Athena-Project/blob/master/journals/1024031169-nipun/w8-athena.md)
