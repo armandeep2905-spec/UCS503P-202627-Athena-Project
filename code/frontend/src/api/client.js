@@ -7,7 +7,11 @@
  * - Handles DRF paginated list responses (`{ count, next, previous, results }`)
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const BASE_URL = (
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  'http://localhost:8000'
+).replace(/\/$/, '');
 
 /**
  * Get stored auth token.

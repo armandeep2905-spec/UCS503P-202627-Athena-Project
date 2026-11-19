@@ -29,6 +29,9 @@ def env_list(key, default=""):
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-CHANGE-ME-IN-PRODUCTION")
 DEBUG = env_bool("DEBUG", default=False)
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default="localhost,127.0.0.1,testserver")
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -76,32 +79,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Database -----------------------------------------------------------
-# Priority: DATABASE_URL (what Render provides when you link a Postgres
-# instance) > discrete DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD (matching
-# the existing DataBase/create_database.py .env pattern) > local sqlite so
-# `python manage.py runserver` still works with zero config.
+# Production uses a persistent PostgreSQL database configured through
+# DATABASE_URL. SQLite remains available for tests only.
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
     DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
-elif os.getenv("DB_HOST"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT", "5432"),
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-        }
-    }
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+    DATABASES = {"default": {}}
 
 # Use local SQLite for tests so running `manage.py test` is fast and does not require remote DB access
 if "test" in sys.argv:
@@ -109,6 +94,8 @@ if "test" in sys.argv:
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "test_db.sqlite3",
     }
+elif not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL must be set outside test runs.")
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -146,8 +133,7 @@ REST_FRAMEWORK = {
 }
 
 # --- CORS -------------------------------------------------------------
-# Point this at your Vercel frontend URL(s), comma-separated, e.g.
-# "https://athena-something.vercel.app,https://athena.yourdomain.com"
+# Point this at the Vercel frontend URL(s), comma-separated.
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_CREDENTIALS = True
 if DEBUG:

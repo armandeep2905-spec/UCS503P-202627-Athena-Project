@@ -174,3 +174,29 @@ The recorded test cases cover:
 ## Repository
 
 [**Athena — GitHub Repository**](https://github.com/nipun1015/UCS503P-202627-Athena-Project)
+
+## Deployment
+
+The application is split across Vercel (frontend) and Render (Django API and PostgreSQL).
+
+### Render backend
+
+1. Connect this repository to Render and create a Blueprint from the root `render.yaml` file. The blueprint provisions a PostgreSQL database and a Python web service.
+2. In the `athena-api` service environment, set `CORS_ALLOWED_ORIGINS` to the exact deployed frontend origin, such as `https://your-project.vercel.app` (no trailing slash). Add `GEMINI_API_KEY` to enable live Gemini answers.
+3. Deploy. The build installs backend dependencies, collects static files, and applies Django migrations. Render sets `DATABASE_URL`, `SECRET_KEY`, and `RENDER_EXTERNAL_HOSTNAME` for the service.
+
+For a manual Render setup, use `code/backend` as the root directory, `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate` as the build command, and `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT` as the start command. Configure `DATABASE_URL`, `SECRET_KEY`, `CORS_ALLOWED_ORIGINS`, and optionally `GEMINI_API_KEY`.
+
+### Vercel frontend
+
+1. Import the repository into Vercel and set the project root directory to `code/frontend`.
+2. Set `VITE_API_URL` to the Render API origin, for example `https://athena-api.onrender.com` (no trailing slash). `VITE_API_BASE_URL` is also supported for compatibility with existing local configuration.
+3. Deploy with the detected Vite build settings (`npm run build`, output directory `dist`). The Vercel rewrite config supports direct navigation to React routes.
+
+Redeploy the frontend after changing `VITE_API_URL`; Vite embeds it into the built assets. Keep `CORS_ALLOWED_ORIGINS` in sync with the Vercel production domain and any preview domain you intend to use.
+
+### Deployment notes
+
+- The backend builds an FTS5 index from `ThaparInfo/tiet_chatbot_knowledge_base.jsonl` on first query. Render's service filesystem is ephemeral, so the index can be rebuilt after a restart; attach persistent storage if avoiding rebuilds matters.
+- The reminder UI currently uses browser-side mock data, so reminders will not persist through the backend after deployment until the frontend reminder API is connected to Django.
+- The frontend has mock fallbacks for campus data and chat. A successful UI response does not by itself confirm the Render API is reachable.
