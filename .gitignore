@@ -3,3 +3,4 @@
 *.db
 ThaparInfo/
 .agents/
+debug_html/

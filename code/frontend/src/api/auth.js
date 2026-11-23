@@ -38,6 +38,24 @@ export async function register(data) {
 }
 
 /**
+ * Get currently authenticated student profile.
+ */
+export async function getProfile() {
+  return fetchClient('/api/auth/me/');
+}
+
+/**
+ * Update authenticated student profile (name, rollNumber).
+ * @param {{ name?: string, rollNumber?: string }} data
+ */
+export async function updateProfile(data) {
+  return fetchClient('/api/auth/me/', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+/**
  * Verify student email against institution domain.
  * Strictly verifies that the email belongs to @thapar.edu or the institution's domain.
  */

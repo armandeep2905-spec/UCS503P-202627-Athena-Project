@@ -16,6 +16,7 @@ from .serializers import (
     FacultySerializer,
     InstitutionSerializer,
     LoginSerializer,
+    ProfileUpdateSerializer,
     QuerySerializer,
     RegisterSerializer,
     ReminderSerializer,
@@ -119,13 +120,112 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 
-class ReminderListCreateView(generics.ListCreateAPIView):
-    """Replaces reminders.js mock — GET/POST /api/reminders/, scoped to the logged-in student."""
+def _get_or_create_student_profile(user):
+    """
+    Ensure every authenticated user (including staff/admin accounts) has a valid
+    Student profile attached so reminders and academic tracking work seamlessly.
+    """
+    if hasattr(user, "student_profile") and user.student_profile:
+        return user.student_profile
+    institution = None
+    if hasattr(user, "admin_profile") and user.admin_profile:
+        institution = user.admin_profile.institution
+    if not institution:
+        institution = Institution.objects.first()
+    student, _ = Student.objects.get_or_create(
+        user=user,
+        defaults={
+            "institution": institution,
+            "name": (
+                user.admin_profile.name
+                if hasattr(user, "admin_profile") and user.admin_profile
+                else user.get_full_name() or user.username
+            ),
+            "is_verified": True,
+        },
+    )
+    return student
+
+
+class ReminderViewSet(viewsets.ModelViewSet):
+    """
+    CRUD /api/reminders/ — scoped strictly to the logged-in student account.
+    Supports GET (list), POST (create), GET {id}, PATCH/PUT {id}, DELETE {id}.
+    """
     serializer_class = ReminderSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
-        return Reminder.objects.filter(student=self.request.user.student_profile)
+        user = self.request.user
+        if not user or not user.is_authenticated:
+            return Reminder.objects.none()
+        student = _get_or_create_student_profile(user)
+
+        # Seed initial starter reminders if this student account has none yet
+        if not Reminder.objects.filter(student=student).exists():
+            starter_reminders = [
+                {
+                    "title": "Software Engineering Assignment Due",
+                    "reminder_date": "2026-09-12",
+                    "description": "Submit UCS503 project report on GitHub. Include all team member journals.",
+                },
+                {
+                    "title": "Mid-Semester Examinations",
+                    "reminder_date": "2026-09-25",
+                    "description": "Mid-semester exams begin. Check date sheet for subject-wise schedule.",
+                },
+                {
+                    "title": "Hackathon Registration Deadline",
+                    "reminder_date": "2026-09-18",
+                    "description": "Register your team for Build for Good hackathon before the deadline.",
+                },
+                {
+                    "title": "Library Book Return",
+                    "reminder_date": "2026-09-14",
+                    "description": "Return 'Design Patterns' by Gamma et al. to the central library.",
+                },
+            ]
+            for sr in starter_reminders:
+                Reminder.objects.create(student=student, **sr)
+
+        return Reminder.objects.filter(student=student).order_by("-id")
+
+    def perform_create(self, serializer):
+        student = _get_or_create_student_profile(self.request.user)
+        serializer.save(student=student)
+
+
+class ProfileView(APIView):
+    """
+    GET /api/auth/me/ — retrieves current authenticated user profile.
+    PATCH /api/auth/me/ — updates student name and roll number.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response(UserPublicSerializer(request.user).data)
+
+    def patch(self, request):
+        serializer = ProfileUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        user = request.user
+        student = _get_or_create_student_profile(user)
+        if "name" in data and data["name"]:
+            clean_name = data["name"].strip()
+            student.name = clean_name
+            user.first_name = clean_name
+            user.save(update_fields=["first_name"])
+            if hasattr(user, "admin_profile") and user.admin_profile:
+                user.admin_profile.name = clean_name
+                user.admin_profile.save(update_fields=["name"])
+        roll = data.get("rollNumber") or data.get("roll_number")
+        if roll is not None:
+            student.roll_number = str(roll).strip()
+        student.save()
+        return Response(UserPublicSerializer(user).data)
 
 
 class QueryView(APIView):
