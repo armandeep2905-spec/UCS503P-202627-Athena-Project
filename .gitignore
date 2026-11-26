@@ -1,4 +1,16 @@
 # ==========================================
+# IDE & Editor Configurations
+# ==========================================
+.vscode/
+.vscode/*
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
 # Operating System Files
 # ==========================================
 .DS_Store
@@ -65,17 +77,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-# ==========================================
-# IDE & Editor Configurations
-# ==========================================
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-*.swp
-*.swo
-*~
 
 # ==========================================
 # Database & Knowledge Base Cache
