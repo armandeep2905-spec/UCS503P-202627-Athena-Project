@@ -3,6 +3,7 @@
 *.db
 ThaparInfo/
 .agents/
+debug_html/
 .venv/
 __pycache__/
 *.pyc
