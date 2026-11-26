@@ -46,6 +46,14 @@ export function AuthProvider({ children }) {
     return result;
   }, [persistAuth]);
 
+  const updateUser = useCallback((userData) => {
+    setUser((prev) => {
+      const merged = { ...prev, ...userData };
+      localStorage.setItem('athena_user', JSON.stringify(merged));
+      return merged;
+    });
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem('athena_token');
     localStorage.removeItem('athena_user');
@@ -61,6 +69,7 @@ export function AuthProvider({ children }) {
     loading,
     login,
     register,
+    updateUser,
     logout,
   };
 

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import SettingsModal from '../dashboard/SettingsModal';
 import { useAuth } from '../../context/AuthContext';
 
 export default function PageShell({ children, title, showBack = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
@@ -97,9 +100,25 @@ export default function PageShell({ children, title, showBack = false }) {
 
             {isAuthenticated && user && (
               <div className="flex items-center gap-2 pl-2 border-l border-border">
-                <span className="hidden sm:inline-block text-xs font-mono text-secondary max-w-[150px] truncate">
-                  {user.name || user.email}
-                </span>
+                {/* Clickable Profile Button */}
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-theme-md text-xs font-medium text-on-surface hover:bg-surface-alt border border-border/60 hover:border-border transition-colors group"
+                  title="View & Edit Profile"
+                  aria-label="Profile"
+                >
+                  <div className="w-5 h-5 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-[10px]">
+                    {(user.name || user.email || 'A')[0].toUpperCase()}
+                  </div>
+                  <span className="hidden sm:inline-block max-w-[130px] truncate text-xs font-mono">
+                    {user.name || user.email}
+                  </span>
+                  <span className="text-[10px] text-muted font-mono px-1 py-0.5 rounded bg-surface border border-border">
+                    Profile
+                  </span>
+                </button>
+
+                {/* Sign out button */}
                 <button
                   onClick={() => {
                     logout();
@@ -131,6 +150,10 @@ export default function PageShell({ children, title, showBack = false }) {
           <span className="font-mono text-[11px] text-muted">Athena Campus Platform • Autumn 2026</span>
         </div>
       </footer>
+
+      {isAuthenticated && (
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      )}
     </div>
   );
 }
