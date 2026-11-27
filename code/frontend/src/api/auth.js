@@ -20,8 +20,23 @@ export async function login(email, password) {
 }
 
 /**
- * Register a new student account.
- * @param {{ name: string, email: string, password: string, institutionId: number }} data
+ * Send OTP to email for registration or password reset.
+ * @param {string} email
+ * @param {'register'|'reset_password'} purpose
+ * @returns {Promise<{ data?: { message: string, dev_otp?: string }, error?: object }>}
+ */
+export async function sendOtp(email, purpose = 'register') {
+  const normPurpose = purpose === 'registration' ? 'register' : (purpose === 'password_reset' ? 'reset_password' : purpose);
+  return fetchClient('/api/auth/send-otp/', {
+    method: 'POST',
+    body: JSON.stringify({ email, purpose: normPurpose }),
+    skipAuth: true,
+  });
+}
+
+/**
+ * Register a new student account with verified email OTP.
+ * @param {{ name: string, email: string, password: string, otp: string, institutionId?: number }} data
  * @returns {Promise<{ data?: { token: string, user: object }, error?: object }>}
  */
 export async function register(data) {
@@ -31,7 +46,25 @@ export async function register(data) {
       name: data.name,
       email: data.email,
       password: data.password,
+      otp: data.otp,
       institution_id: data.institutionId,
+    }),
+    skipAuth: true,
+  });
+}
+
+/**
+ * Reset user password with verified OTP.
+ * @param {{ email: string, otp: string, newPassword: string }} data
+ * @returns {Promise<{ data?: { message: string }, error?: object }>}
+ */
+export async function resetPassword({ email, otp, newPassword }) {
+  return fetchClient('/api/auth/reset-password/', {
+    method: 'POST',
+    body: JSON.stringify({
+      email,
+      otp,
+      new_password: newPassword,
     }),
     skipAuth: true,
   });

@@ -1,12 +1,20 @@
+import datetime
+import logging
+import secrets
+from datetime import timedelta
+
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models import Building, Course, Event, Faculty, Institution, Reminder, Society, Student
+from core.models import Building, Course, EmailOTP, Event, Faculty, Institution, Reminder, Society, Student
 from core.rag_service import get_rag_service
 
 from .serializers import (
@@ -20,36 +28,206 @@ from .serializers import (
     QuerySerializer,
     RegisterSerializer,
     ReminderSerializer,
+    ResetPasswordSerializer,
+    SendOtpSerializer,
     SocietySerializer,
     UserPublicSerializer,
 )
 
+logger = logging.getLogger(__name__)
+
+
+def send_otp_email(to_email, otp, purpose):
+    """Deliver a professional HTML + plain-text OTP email to the student."""
+    purpose_label = "Student Registration" if purpose == "register" else "Password Reset"
+    subject = f"Athena TIET — Your Verification Code: {otp}"
+    plain_text = (
+        f"Hello,\n\n"
+        f"Your verification code for {purpose_label} on the Athena TIET Campus Platform is:\n\n"
+        f"   {otp}\n\n"
+        f"This code will expire in 10 minutes. If you did not request this, please ignore this email.\n\n"
+        f"Best regards,\n"
+        f"Athena Campus Intelligence Portal\n"
+        f"Thapar Institute of Engineering & Technology, Patiala"
+    )
+    html_message = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
+      <div style="margin-bottom: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+        <span style="font-size: 11px; font-family: monospace; color: #991b1b; background-color: #fef2f2; padding: 4px 8px; border-radius: 4px; font-weight: 600;">ATHENA TIET SECURITY</span>
+        <h2 style="margin: 8px 0 0 0; color: #111827; font-size: 20px; font-weight: 600;">{purpose_label} Code</h2>
+      </div>
+      <p style="color: #4b5563; font-size: 14px; line-height: 1.5; margin: 0 0 20px 0;">
+        Use the following one-time code to verify your institutional account at <strong>Thapar Institute of Engineering &amp; Technology</strong>:
+      </p>
+      <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 20px;">
+        <span style="font-family: monospace; font-size: 32px; font-weight: 700; letter-spacing: 6px; color: #991b1b;">{otp}</span>
+      </div>
+      <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 0 0 16px 0;">
+        This code is valid for <strong>10 minutes</strong>. Never share this code with anyone.
+      </p>
+      <div style="border-top: 1px solid #e5e7eb; padding-top: 14px; color: #9ca3af; font-size: 11px;">
+        Athena Campus Intelligence Platform &bull; Thapar Institute of Engineering &amp; Technology, Patiala
+      </div>
+    </div>
+    """
+    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "Athena TIET <noreply@thapar.edu>")
+    return send_mail(
+        subject=subject,
+        message=plain_text,
+        from_email=from_email,
+        recipient_list=[to_email],
+        html_message=html_message,
+        fail_silently=False,
+    )
+
+
+class SendOtpView(APIView):
+    """
+    POST /api/auth/send-otp/
+    Generates a 6-digit OTP, stores it in EmailOTP with 10-minute validity, and sends email.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = SendOtpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"].lower().strip()
+        purpose = serializer.validated_data["purpose"]
+
+        # Generate 6-digit numerical code
+        otp = f"{secrets.randbelow(900000) + 100000}"
+        expires_at = timezone.now() + timedelta(minutes=10)
+
+        # Invalidate previous unverified OTPs for this email & purpose
+        EmailOTP.objects.filter(email=email, purpose=purpose, is_used=False).update(is_used=True)
+
+        EmailOTP.objects.create(
+            email=email,
+            otp=otp,
+            purpose=purpose,
+            expires_at=expires_at,
+        )
+
+        email_sent = False
+        try:
+            send_otp_email(email, otp, purpose)
+            email_sent = True
+        except Exception as e:
+            logger.warning(f"[SendOtpView] Failed to deliver email to {email}: {e}")
+
+        resp_payload = {
+            "message": f"Verification code sent to {email}.",
+            "email_sent": email_sent,
+        }
+
+        # In DEBUG or console backend mode, provide dev_otp for developer ease
+        if getattr(settings, "DEBUG", False) or "console" in getattr(settings, "EMAIL_BACKEND", ""):
+            resp_payload["dev_otp"] = otp
+
+        return Response(resp_payload, status=status.HTTP_200_OK)
+
 
 class RegisterView(APIView):
-    """POST /api/auth/register — matches auth.js's register() payload."""
+    """
+    POST /api/auth/register
+    Creates a new Student user profile strictly after verifying the email OTP.
+    """
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        email = data["email"].lower().strip()
+        otp = data["otp"].strip()
+
+        # Validate OTP
+        otp_record = (
+            EmailOTP.objects.filter(email=email, purpose="register", is_used=False)
+            .order_by("-id")
+            .first()
+        )
+
+        if not otp_record or not otp_record.is_valid() or otp_record.otp != otp:
+            if otp_record:
+                otp_record.attempts += 1
+                otp_record.save(update_fields=["attempts"])
+            return Response(
+                {"detail": "Invalid or expired verification code. Please request a new code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Mark OTP as consumed
+        otp_record.is_used = True
+        otp_record.save(update_fields=["is_used"])
 
         with transaction.atomic():
             user = User.objects.create_user(
-                username=data["email"],
-                email=data["email"],
+                username=email,
+                email=email,
                 password=data["password"],
             )
             Student.objects.create(
                 user=user,
                 institution_id=data["institution_id"],
                 name=data["name"],
+                is_verified=True,
             )
 
         token, _ = Token.objects.get_or_create(user=user)
         return Response(
             {"token": token.key, "user": UserPublicSerializer(user).data},
             status=status.HTTP_201_CREATED,
+        )
+
+
+class ResetPasswordView(APIView):
+    """
+    POST /api/auth/reset-password/
+    Verifies OTP sent to @thapar.edu email and resets the user's password.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        email = data["email"].lower().strip()
+        otp = data["otp"].strip()
+        new_password = data["new_password"]
+
+        otp_record = (
+            EmailOTP.objects.filter(email=email, purpose="reset_password", is_used=False)
+            .order_by("-id")
+            .first()
+        )
+
+        if not otp_record or not otp_record.is_valid() or otp_record.otp != otp:
+            if otp_record:
+                otp_record.attempts += 1
+                otp_record.save(update_fields=["attempts"])
+            return Response(
+                {"detail": "Invalid or expired password reset code. Please request a new code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "No account found with this email."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        otp_record.is_used = True
+        otp_record.save(update_fields=["is_used"])
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {"message": "Password reset successfully. You can now sign in with your new password."},
+            status=status.HTTP_200_OK,
         )
 
 

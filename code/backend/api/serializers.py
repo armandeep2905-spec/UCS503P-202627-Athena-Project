@@ -5,6 +5,7 @@ from core.models import (
     Building,
     Course,
     Department,
+    EmailOTP,
     Event,
     Faculty,
     Floor,
@@ -60,11 +61,33 @@ class UserPublicSerializer(serializers.ModelSerializer):
         return "student"
 
 
+class SendOtpSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    purpose = serializers.ChoiceField(choices=["register", "reset_password"])
+
+    def validate_email(self, value):
+        email = value.lower().strip()
+        if not email.endswith("@thapar.edu"):
+            raise serializers.ValidationError("Only institutional emails with the @thapar.edu domain are eligible.")
+        return email
+
+    def validate(self, attrs):
+        email = attrs["email"]
+        purpose = attrs["purpose"]
+        exists = User.objects.filter(email__iexact=email).exists()
+        if purpose == "register" and exists:
+            raise serializers.ValidationError({"email": "An account with this institutional email already exists. Please sign in."})
+        if purpose == "reset_password" and not exists:
+            raise serializers.ValidationError({"email": "No account found with this email address."})
+        return attrs
+
+
 class RegisterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, min_length=8)
     institution_id = serializers.IntegerField()
+    otp = serializers.CharField(max_length=6, min_length=6)
 
     def validate_email(self, value):
         email = value.lower().strip()
@@ -78,6 +101,15 @@ class RegisterSerializer(serializers.Serializer):
         if not Institution.objects.filter(id=value).exists():
             raise serializers.ValidationError("Institution not found.")
         return value
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6, min_length=6)
+    new_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate_email(self, value):
+        return value.lower().strip()
 
 
 class LoginSerializer(serializers.Serializer):

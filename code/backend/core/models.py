@@ -139,3 +139,29 @@ class Reminder(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class EmailOTP(models.Model):
+    PURPOSE_CHOICES = (
+        ("register", "Registration"),
+        ("reset_password", "Password Reset"),
+    )
+    email = models.EmailField(db_index=True)
+    otp = models.CharField(max_length=6)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    attempts = models.IntegerField(default=0)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["email", "purpose", "is_used"]),
+        ]
+
+    def is_valid(self):
+        from django.utils import timezone
+        return not self.is_used and timezone.now() <= self.expires_at and self.attempts < 5
+
+    def __str__(self):
+        return f"{self.email} ({self.purpose}) - {self.otp}"

@@ -210,3 +210,4 @@ export default function SettingsModal({ isOpen, onClose }) {
     </Modal>
   );
 }
+
