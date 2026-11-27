@@ -208,14 +208,24 @@ class BuildingSerializer(serializers.ModelSerializer):
 
 class ReminderSerializer(serializers.ModelSerializer):
     studentId = serializers.IntegerField(source="student_id", read_only=True)
+    date = serializers.CharField(source="reminder_date", required=False, allow_blank=True, allow_null=True)
+    note = serializers.CharField(source="description", required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Reminder
-        fields = ["id", "studentId", "title", "reminder_date", "description"]
+        fields = ["id", "studentId", "title", "reminder_date", "description", "date", "note"]
 
     def create(self, validated_data):
-        validated_data["student"] = self.context["request"].user.student_profile
+        request = self.context.get("request")
+        if request and hasattr(request.user, "student_profile"):
+            validated_data["student"] = request.user.student_profile
         return super().create(validated_data)
+
+
+class ProfileUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255, required=False)
+    rollNumber = serializers.CharField(max_length=50, required=False, allow_blank=True, allow_null=True)
+    roll_number = serializers.CharField(max_length=50, required=False, allow_blank=True, allow_null=True)
 
 
 class QuerySerializer(serializers.Serializer):
